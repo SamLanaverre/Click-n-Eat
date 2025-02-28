@@ -1,9 +1,7 @@
 @extends('layout.main')
 
 @section('main')
-    <h1>BONJOUR</h1> <!-- Le titre "BONJOUR" ajouté -->
-
-    {{-- <h1>Restaurants</h1>
+    <h1>Restaurants</h1>
 
     <a href="{{ route('restaurants.create') }}">Créer un restaurant</a>
 
@@ -35,7 +33,7 @@
                 </tr>
             @endforeach
         </tbody>
-    </table> --}}
+    </table>
 @endsection
 
 @section('scripts')
