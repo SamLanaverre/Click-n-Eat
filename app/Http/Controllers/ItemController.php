@@ -11,7 +11,7 @@ class ItemController extends Controller {
         $items = Item::with('category')->get();
         return view('items.index', compact('items'));
     }
-
+    
     public function show($id) { 
         $item = Item::with('category')->findOrFail($id);
         return view('items.show', compact('item'));
