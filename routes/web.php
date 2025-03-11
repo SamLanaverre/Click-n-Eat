@@ -12,7 +12,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
-        return redirect()->route('restaurants.index');
+        return view('dashboard');
     })->name('dashboard');
     
     Route::resource('restaurants', RestaurantController::class);

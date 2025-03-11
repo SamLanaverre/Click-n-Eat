@@ -1,59 +1,58 @@
-@extends('layouts.main')
-
-@section('content')
-    <h1>Modifier l'Item</h1>
-
-    @if ($errors->any())
-        <div style="color: red;">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+<x-adminlte-layout>
+    @section('header', 'Items')
+    
+    @section('content')
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Liste des items</h3>
+            <div class="card-tools">
+                <a href="{{ route('items.create') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Créer un item
+                </a>
+            </div>
         </div>
-    @endif
-
-    @isset($item)
-        <form action="{{ route('items.update', $item->id) }}" method="POST">
-            @csrf
-            @method('PUT')
-
-            <div>
-                <label for="name">Nom :</label>
-                <input type="text" name="name" value="{{ old('name', $item->name) }}" required>
-            </div>
-
-            <div>
-                <label for="cost">Coût (centimes) :</label>
-                <input type="number" name="cost" value="{{ old('cost', $item->cost) }}" required>
-            </div>
-
-            <div>
-                <label for="price">Prix (centimes) :</label>
-                <input type="number" name="price" value="{{ old('price', $item->price) }}" required>
-            </div>
-
-            <div>
-                <label for="category_id">Catégorie :</label>
-                <select name="category_id" required>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}" {{ $item->category_id == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
-                        </option>
+        <div class="card-body table-responsive p-0">
+            <table class="table table-hover text-nowrap">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Coût</th>
+                        <th>Prix</th>
+                        <th>Catégorie</th>
+                        <th>Disponible</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($items as $item)
+                        <tr>
+                            <td>{{ $item->id }}</td>
+                            <td>{{ $item->name }}</td>
+                            <td>{{ $item->cost }}</td>
+                            <td>{{ $item->price }}</td>
+                            <td>{{ $item->category->name }}</td>
+                            <td>{{ $item->is_active ? 'Oui' : 'Non' }}</td>
+                            <td>
+                                <a href="{{ route('items.show', $item->id) }}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ route('items.edit', $item->id) }}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="{{ route('items.destroy', $item->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('delete')
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet item?')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
                     @endforeach
-                </select>
-            </div>
-
-            <div>
-                <label for="is_active">Disponible :</label>
-                <input type="checkbox" name="is_active" value="1" {{ $item->is_active ? 'checked' : '' }}>
-            </div>
-
-            <button type="submit">Modifier</button>
-        </form>
-    @else
-        <p>Item non trouvé.</p>
-    @endisset
-
-    <a href="{{ route('items.index') }}">Retour à la liste des items</a>
-@endsection
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endsection
+</x-adminlte-layout>
