@@ -2,53 +2,80 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Restaurant;
-use App\Models\Category;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class RestaurantController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-    $restaurants = Restaurant::all(); // Récupère les restaurants depuis la BDD
-    return view('restaurants.index', compact('restaurants')); // Assure-toi que ce chemin est correct
+        $restaurants = auth()->user()->restaurants;
+        return view('restaurants.index', compact('restaurants'));
     }
 
-    public function create() {
+    public function create(): View
+    {
         return view('restaurants.create');
     }
 
-    public function store(Request $request) {
-        Restaurant::create( $request->all() );
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'address' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'opening_hours' => 'required|array'
+        ]);
+
+        $restaurant = auth()->user()->restaurants()->create($validated);
+
+        return redirect()->route('restaurants.categories.index', $restaurant)
+            ->with('success', 'Restaurant créé avec succès.');
+    }
+
+    public function edit(Restaurant $restaurant): View
+    {
+        $this->authorize('update', $restaurant);
+        return view('restaurants.edit', compact('restaurant'));
+    }
+
+    public function update(Request $request, Restaurant $restaurant): RedirectResponse
+    {
+        $this->authorize('update', $restaurant);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'address' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'opening_hours' => 'required|array'
+        ]);
+
+        $restaurant->update($validated);
+
+        return redirect()->route('restaurant.dashboard')
+            ->with('success', 'Restaurant mis à jour avec succès.');
+    }
+
+    public function destroy(Restaurant $restaurant): RedirectResponse
+    {
+        $this->authorize('delete', $restaurant);
         
-        return redirect()->route('restaurants.index');
+        $restaurant->delete();
+
+        return redirect()->route('restaurant.dashboard')
+            ->with('success', 'Restaurant supprimé avec succès.');
     }
 
-    public function show($id) {
-        return view('restaurants.show', [
-            'restaurant' => Restaurant::findOrFail($id)
+    public function showMenu(Restaurant $restaurant): View
+    {
+        return view('restaurants.menu', [
+            'restaurant' => $restaurant->load(['categories.items' => function($query) {
+                $query->where('is_active', true);
+            }])
         ]);
-    }
-
-    public function edit($id) {
-        return view('restaurants.edit', [
-            'restaurant' => Restaurant::findOrFail($id)
-        ]);
-    }
-
-    public function update(Request $request, $id) {
-        $restaurant = Restaurant::findOrFail($id);
-
-        $restaurant->name = $request->get('name');
-        $restaurant->save();
-
-        return redirect()->route('restaurants.index');
-    }
-
-    public function destroy(Request $request, $id) {
-        if($request->get('id') == $id) {
-            Restaurant::destroy($id);
-        }
-        return redirect()->route('restaurants.index');
     }
 }

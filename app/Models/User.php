@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role'
     ];
 
     /**
@@ -44,5 +45,45 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the restaurants owned by the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function restaurants()
+    {
+        return $this->hasMany(Restaurant::class, 'owner_id');
+    }
+
+    /**
+     * Get the orders made by the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'client_id');
+    }
+
+    /**
+     * Check if the user is a restaurateur.
+     *
+     * @return bool
+     */
+    public function isRestaurateur()
+    {
+        return $this->role === 'restaurateur';
+    }
+
+    /**
+     * Check if the user is a client.
+     *
+     * @return bool
+     */
+    public function isClient()
+    {
+        return $this->role === 'client';
     }
 }
