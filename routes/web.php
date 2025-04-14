@@ -7,10 +7,16 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
 use App\Http\Controllers\Restaurant\DashboardController as RestaurantDashboardController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
+});
+
+// Routes pour les admins
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 });
 
 // Routes pour les clients
@@ -22,7 +28,7 @@ Route::middleware(['auth', 'role:client'])->group(function () {
 
 // Routes pour les restaurateurs
 Route::middleware(['auth', 'role:restaurateur'])->group(function () {
-    Route::get('/restaurant/dashboard', [RestaurantDashboardController::class, 'index'])->name('restaurant.dashboard');
+    Route::get('/restaurateur/dashboard', [RestaurantDashboardController::class, 'index'])->name('restaurateur.dashboard');
     Route::resource('restaurants', RestaurantController::class)->except(['show']);
     Route::resource('restaurants.categories', CategoryController::class);
     Route::resource('categories.items', ItemController::class);

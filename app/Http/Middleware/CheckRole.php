@@ -13,9 +13,15 @@ class CheckRole
         if (!$request->user() || $request->user()->role !== $role) {
             if ($request->user()) {
                 // Redirect to appropriate dashboard based on actual role
-                return redirect()->route(
-                    $request->user()->role === 'restaurateur' ? 'restaurant.dashboard' : 'client.dashboard'
-                );
+                $userRole = $request->user()->role;
+                switch ($userRole) {
+                    case 'admin':
+                        return redirect()->route('admin.dashboard');
+                    case 'restaurateur':
+                        return redirect()->route('restaurateur.dashboard');
+                    default:
+                        return redirect()->route('client.dashboard');
+                }
             }
             return redirect()->route('login');
         }
