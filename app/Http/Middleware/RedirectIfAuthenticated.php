@@ -16,11 +16,16 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
+                // Utilisateur authentifié, rediriger en fonction du rôle
                 $user = Auth::guard($guard)->user();
-                if ($user->isRestaurateur()) {
-                    return redirect()->route('restaurant.dashboard');
+                
+                if ($user->isAdmin()) {
+                    return redirect()->route('admin.dashboard');
+                } else if ($user->isRestaurateur()) {
+                    return redirect()->route('restaurateur.dashboard');
+                } else {
+                    return redirect()->route('client.dashboard');
                 }
-                return redirect()->route('client.dashboard');
             }
         }
 

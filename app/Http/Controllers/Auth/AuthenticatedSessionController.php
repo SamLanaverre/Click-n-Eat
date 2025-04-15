@@ -30,6 +30,7 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
 
+        // Redirection basée sur le rôle de l'utilisateur
         if ($user->isAdmin()) {
             return redirect()->route('admin.dashboard');
         } elseif ($user->isRestaurateur()) {

@@ -10,8 +10,24 @@ use App\Http\Controllers\Restaurant\DashboardController as RestaurantDashboardCo
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use Illuminate\Support\Facades\Route;
 
+// Route de base - redirige vers login
 Route::get('/', function () {
     return redirect()->route('login');
+});
+
+// Route pour le dashboard après connexion
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', function () {
+        $user = auth()->user();
+        
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->isRestaurateur()) {
+            return redirect()->route('restaurateur.dashboard');
+        } else {
+            return redirect()->route('client.dashboard');
+        }
+    })->name('dashboard');
 });
 
 // Routes pour les admins
