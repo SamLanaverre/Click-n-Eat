@@ -10,18 +10,11 @@ class CheckRole
 {
     public function handle(Request $request, Closure $next, string $role): Response
     {
-        if (!$request->user() || $request->user()->role !== $role) {
-            if ($request->user()) {
-                // Redirect to appropriate dashboard based on actual role
-                $userRole = $request->user()->role;
-                switch ($userRole) {
-                    case 'admin':
-                        return redirect()->route('admin.dashboard');
-                    case 'restaurateur':
-                        return redirect()->route('restaurateur.dashboard');
-                    default:
-                        return redirect()->route('client.dashboard');
-                }
+        $user = $request->user();
+
+        if (!$user || !$user->hasRole($role)) {
+            if ($user) {
+                return redirect()->route($user->getDashboardRoute());
             }
             return redirect()->route('login');
         }

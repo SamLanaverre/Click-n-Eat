@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -67,33 +67,5 @@ class User extends Authenticatable
         return $this->hasMany(Order::class, 'client_id');
     }
 
-    /**
-     * Check if the user is a restaurateur.
-     *
-     * @return bool
-     */
-    public function isRestaurateur()
-    {
-        return $this->role === 'restaurateur';
-    }
 
-    /**
-     * Check if the user is a client.
-     *
-     * @return bool
-     */
-    public function isClient()
-    {
-        return $this->role === 'client';
-    }
-
-    /**
-     * Check if the user is an admin.
-     *
-     * @return bool
-     */
-    public function isAdmin()
-    {
-        return $this->role === 'admin';
-    }
 }
