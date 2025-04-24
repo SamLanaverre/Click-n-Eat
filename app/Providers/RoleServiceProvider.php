@@ -15,7 +15,6 @@ class RoleServiceProvider extends ServiceProvider
 
     public function boot(Kernel $kernel): void
     {
-        $kernel->appendMiddlewareToGroup('web', CheckRole::class);
-        $kernel->appendToMiddlewarePriority(CheckRole::class);
+
     }
 }
