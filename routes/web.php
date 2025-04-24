@@ -9,6 +9,7 @@ use App\Http\Controllers\Client\DashboardController as ClientDashboardController
 use App\Http\Controllers\Restaurant\DashboardController as RestaurantDashboardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\CheckRole;
 
 // Route de base - redirige vers login
 Route::get('/', function () {
@@ -30,19 +31,19 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Routes pour les admins
-Route::middleware(['auth', 'role:admin'])->group(function () {
+Route::middleware(['auth', CheckRole::class.':admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 });
 
 // Routes pour les clients
-Route::middleware(['auth', 'role:client'])->group(function () {
+Route::middleware(['auth', CheckRole::class.':client'])->group(function () {
     Route::get('/client/dashboard', [ClientDashboardController::class, 'index'])->name('client.dashboard');
     Route::get('/restaurants/{restaurant}/menu', [RestaurantController::class, 'showMenu'])->name('restaurants.menu');
     Route::resource('orders', OrderController::class)->only(['store', 'show', 'index']);
 });
 
 // Routes pour les restaurateurs
-Route::middleware(['auth', 'role:restaurateur'])->group(function () {
+Route::middleware(['auth', CheckRole::class.':restaurateur'])->group(function () {
     Route::get('/restaurateur/dashboard', [RestaurantDashboardController::class, 'index'])->name('restaurateur.dashboard');
     Route::resource('restaurants', RestaurantController::class)->except(['show']);
     Route::resource('restaurants.categories', CategoryController::class);
