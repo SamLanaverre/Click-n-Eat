@@ -17,6 +17,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+
+        $this->call([
+            AdminUserSeeder::class,
+            ClientUserSeeder::class,
+        ]);
+        
         // Crée 12 restaurants
         Restaurant::factory(12)->create();
 

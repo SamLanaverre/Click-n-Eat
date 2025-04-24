@@ -18,7 +18,14 @@ Route::get('/', function () {
 // Route pour le dashboard après connexion
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
-        return redirect()->route(auth()->user()->getDashboardRoute());
+        $user = auth()->user();
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->role === 'restaurateur') {
+            return redirect()->route('restaurateur.dashboard');
+        } else {
+            return redirect()->route('client.dashboard');
+        }
     })->name('dashboard');
 });
 
