@@ -20,13 +20,8 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
         $user = auth()->user();
-        if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        } elseif ($user->role === 'restaurateur') {
-            return redirect()->route('restaurateur.dashboard');
-        } else {
-            return redirect()->route('client.dashboard');
-        }
+        // Utilisation de la méthode du trait HasRoles pour plus de cohérence
+        return redirect()->route($user->getDashboardRoute());
     })->name('dashboard');
 });
 
@@ -57,7 +52,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+    // Routes pour l'accès aux catégories et items (lecture seule)
+    Route::resource('categories', CategoryController::class)->only(['index', 'show']);
+    Route::resource('items', ItemController::class)->only(['index', 'show']);
+    
+    // Permet d'accéder au restaurant
+    Route::get('/restaurants/{restaurant}', [RestaurantController::class, 'show'])->name('restaurants.show');
 });
 
 require __DIR__.'/auth.php';
