@@ -7,10 +7,9 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -23,6 +22,9 @@
                 <li class="nav-item">
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="{{ route('dashboard') }}" class="nav-link">Accueil</a>
+                </li>
             </ul>
 
             <!-- Right navbar links -->
@@ -30,17 +32,20 @@
                 <!-- Profile Dropdown Menu -->
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
-                        <i class="fas fa-user"></i> {{ Auth::user()->name }}
+                        <i class="fas fa-user"></i>
+                        @if(Auth::check())
+                            {{ Auth::user()->name }}
+                        @endif
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
                         <a href="{{ route('profile.edit') }}" class="dropdown-item">
-                            <i class="fas fa-user-cog mr-2"></i> {{ __('Profile') }}
+                            <i class="fas fa-user-cog mr-2"></i> Profil
                         </a>
                         <div class="dropdown-divider"></div>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" class="dropdown-item">
-                                <i class="fas fa-sign-out-alt mr-2"></i> {{ __('Log Out') }}
+                                <i class="fas fa-sign-out-alt mr-2"></i> Déconnexion
                             </button>
                         </form>
                     </div>
@@ -59,6 +64,18 @@
 
             <!-- Sidebar -->
             <div class="sidebar">
+                <!-- Sidebar user panel (optional) -->
+                @if(Auth::check())
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                    <div class="image">
+                        <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+                    </div>
+                    <div class="info">
+                        <a href="{{ route('profile.edit') }}" class="d-block">{{ Auth::user()->name }}</a>
+                    </div>
+                </div>
+                @endif
+
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -68,18 +85,21 @@
                                 <p>Dashboard</p>
                             </a>
                         </li>
+                        
                         <li class="nav-item">
                             <a href="{{ route('restaurants.index') }}" class="nav-link {{ request()->routeIs('restaurants.*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-utensils"></i>
                                 <p>Restaurants</p>
                             </a>
                         </li>
+                        
                         <li class="nav-item">
                             <a href="{{ route('categories.index') }}" class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-list"></i>
                                 <p>Catégories</p>
                             </a>
                         </li>
+                        
                         <li class="nav-item">
                             <a href="{{ route('items.index') }}" class="nav-link {{ request()->routeIs('items.*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-hamburger"></i>
@@ -115,6 +135,7 @@
                             {{ session('status') }}
                         </div>
                     @endif
+                    
                     @if (session('error'))
                         <div class="alert alert-danger">
                             {{ session('error') }}
@@ -136,7 +157,19 @@
             </div>
             <strong>Copyright &copy; {{ date('Y') }} <a href="#">{{ config('app.name', 'Laravel') }}</a>.</strong> All rights reserved.
         </footer>
+        
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
     </div>
     <!-- ./wrapper -->
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Bootstrap 4 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

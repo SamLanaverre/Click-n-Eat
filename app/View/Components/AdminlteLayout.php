@@ -12,6 +12,6 @@ class AdminlteLayout extends Component
      */
     public function render(): View
     {
-        return view('layouts.adminlte');
+        return view('layout.adminlte');
     }
 }
