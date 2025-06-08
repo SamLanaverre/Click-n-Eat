@@ -26,24 +26,50 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Routes pour les admins
-Route::middleware(['auth', CheckRole::class.':admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->middleware('role:admin')->name('admin.dashboard');
 });
 
 // Routes pour les clients
-Route::middleware(['auth', CheckRole::class.':client'])->group(function () {
-    Route::get('/client/dashboard', [ClientDashboardController::class, 'index'])->name('client.dashboard');
-    Route::get('/restaurants/{restaurant}/menu', [RestaurantController::class, 'showMenu'])->name('restaurants.menu');
-    Route::resource('orders', OrderController::class)->only(['store', 'show', 'index']);
+Route::middleware(['auth'])->prefix('client')->group(function () {
+    Route::get('/dashboard', [ClientDashboardController::class, 'index'])->middleware('role:client')->name('client.dashboard');
 });
 
 // Routes pour les restaurateurs
-Route::middleware(['auth', CheckRole::class.':restaurateur'])->group(function () {
-    Route::get('/restaurateur/dashboard', [RestaurantDashboardController::class, 'index'])->name('restaurateur.dashboard');
-    Route::resource('restaurants', RestaurantController::class)->except(['show']);
-    Route::resource('restaurants.categories', CategoryController::class);
-    Route::resource('categories.items', ItemController::class);
-    Route::resource('restaurants.orders', OrderController::class)->only(['index', 'show', 'update']);
+Route::middleware(['auth'])->prefix('restaurateur')->group(function () {
+    Route::get('/dashboard', [RestaurantDashboardController::class, 'index'])->middleware('role:restaurateur')->name('restaurateur.dashboard');
+});
+
+// Routes pour les clients authentifiés
+Route::middleware(['auth'])->group(function () {
+    Route::get('/restaurants/{restaurant}/menu', [RestaurantController::class, 'showMenu'])->name('restaurants.menu');
+    Route::controller(OrderController::class)->group(function () {
+        Route::get('/orders', 'index')->middleware('role:client')->name('orders.index');
+        Route::get('/orders/{order}', 'show')->middleware('role:client')->name('orders.show');
+        Route::post('/orders', 'store')->middleware('role:client')->name('orders.store');
+        Route::patch('/orders/{order}/cancel', 'cancel')->middleware('role:client')->name('orders.cancel');
+    });
+});
+
+// Routes pour les restaurateurs authentifiés
+Route::middleware(['auth'])->group(function () {
+    Route::controller(RestaurantController::class)->group(function () {
+        Route::get('/restaurants', 'index')->middleware('role:restaurateur')->name('restaurants.index');
+        Route::post('/restaurants', 'store')->middleware('role:restaurateur')->name('restaurants.store');
+        Route::get('/restaurants/create', 'create')->middleware('role:restaurateur')->name('restaurants.create');
+        Route::get('/restaurants/{restaurant}/edit', 'edit')->middleware('role:restaurateur')->name('restaurants.edit');
+        Route::put('/restaurants/{restaurant}', 'update')->middleware('role:restaurateur')->name('restaurants.update');
+        Route::delete('/restaurants/{restaurant}', 'destroy')->middleware('role:restaurateur')->name('restaurants.destroy');
+    });
+    
+    Route::resource('restaurants.categories', CategoryController::class)->middleware('role:restaurateur');
+    Route::resource('categories.items', ItemController::class)->middleware('role:restaurateur');
+    
+    Route::controller(OrderController::class)->prefix('restaurants/{restaurant}')->group(function () {
+        Route::get('/orders', 'index')->middleware('role:restaurateur')->name('restaurants.orders.index');
+        Route::get('/orders/{order}', 'show')->middleware('role:restaurateur')->name('restaurants.orders.show');
+        Route::patch('/orders/{order}', 'update')->middleware('role:restaurateur')->name('restaurants.orders.update');
+    });
 });
 
 // Routes communes

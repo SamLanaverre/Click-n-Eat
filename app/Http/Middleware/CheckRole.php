@@ -10,21 +10,17 @@ class CheckRole
 {
     /**
      * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, string $role = null): Response
+    public function handle(Request $request, Closure $next, string $role): Response
     {
-        $user = $request->user();
-
-        // Si aucun rôle n'est spécifié, on laisse passer
-        if ($role === null) {
-            return $next($request);
+        if (!$request->user()) {
+            return redirect()->route('login');
         }
 
-        if (!$user || $user->role !== $role) {
-            if ($user) {
-                return redirect()->route($user->getDashboardRoute());
-            }
-            return redirect()->route('login');
+        if ($request->user()->role !== $role) {
+            return redirect()->route($request->user()->role . '.dashboard');
         }
 
         return $next($request);

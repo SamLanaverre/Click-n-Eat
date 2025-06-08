@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Restaurant;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,8 +18,8 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'=>fake()->name(),
-            'restaurant_id' => random_int(1, 3)
+            'name' => fake()->words(2, true),
+            'restaurant_id' => Restaurant::factory()
         ];
     }
 }

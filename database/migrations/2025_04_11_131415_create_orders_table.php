@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('total_price', 8, 2);
             $table->enum('status', ['pending', 'confirmed', 'ready', 'completed', 'cancelled'])->default('pending');
             $table->dateTime('pickup_time');
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
 

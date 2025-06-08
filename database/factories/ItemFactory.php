@@ -22,7 +22,7 @@ class ItemFactory extends Factory
             'cost' => $this->faker->numberBetween(100, 5000), // En centimes
             'price' => $this->faker->numberBetween(500, 10000), // En centimes
             'is_active' => $this->faker->boolean(), // Booléen pour activer ou non
-            'category_id' => Category::all()->random()->id, // Lier chaque item à une catégorie existante
+            'category_id' => Category::factory(), // Crée une nouvelle catégorie si nécessaire
         ];
     }
 }

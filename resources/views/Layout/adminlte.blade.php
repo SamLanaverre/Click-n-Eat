@@ -10,7 +10,13 @@
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     
-    <!-- Scripts -->
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ asset('vendor/@fortawesome/fontawesome-free/css/all.min.css') }}">
+    
+    <!-- AdminLTE CSS -->
+    <link rel="stylesheet" href="{{ asset('vendor/admin-lte/dist/css/adminlte.min.css') }}">
+    
+    <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -167,9 +173,15 @@
     <!-- ./wrapper -->
 
     <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
     
     <!-- Bootstrap 4 -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    
+    <!-- AdminLTE App -->
+    <script src="{{ asset('vendor/admin-lte/dist/js/adminlte.min.js') }}"></script>
+    
+    <!-- Alpine.js -->
+    <script defer src="{{ asset('vendor/alpinejs/dist/cdn.min.js') }}"></script>
 </body>
 </html>
