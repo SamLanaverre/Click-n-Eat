@@ -32,12 +32,6 @@
                                 <x-nav-link :href="route('restaurants.index')" :active="request()->routeIs('restaurants.*')">
                                     {{ __('Restaurants') }}
                                 </x-nav-link>
-                                <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')">
-                                    {{ __('Catégories') }}
-                                </x-nav-link>
-                                <x-nav-link :href="route('items.index')" :active="request()->routeIs('items.*')">
-                                    {{ __('Items') }}
-                                </x-nav-link>
                             </div>
                         </div>
 

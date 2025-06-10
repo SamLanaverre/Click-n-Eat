@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layout.adminlte')
 
 @section('content')
 <h1>Ajouter un Item</h1>

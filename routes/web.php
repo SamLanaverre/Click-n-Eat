@@ -16,16 +16,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 Route::get('/', function () {
-    if (Auth::check() && Session::has('login_web')) {
-        // Session valide, rediriger selon le rôle
+    if (Auth::check()) {
         $user = Auth::user();
         return redirect()->route($user->getDashboardRoute());
     }
-    // Si la session est expirée, on logout pour éviter la redirection auto
-    Auth::logout();
-    Session::invalidate();
-    Session::regenerateToken();
-    return redirect()->route('login');
+    return view('welcome');
 });
 
 // Route pour le dashboard après connexion
@@ -47,11 +42,6 @@ Route::middleware(['auth'])->prefix('client')->group(function () {
     Route::get('/dashboard', [ClientDashboardController::class, 'index'])->middleware('role:client')->name('client.dashboard');
 });
 
-// Routes pour les restaurateurs
-Route::middleware(['auth'])->prefix('restaurateur')->group(function () {
-    Route::get('/dashboard', [RestaurantDashboardController::class, 'index'])->middleware('role:restaurateur')->name('restaurateur.dashboard');
-});
-
 // Routes pour les clients authentifiés
 Route::middleware(['auth'])->group(function () {
     Route::get('/restaurants/{restaurant}/menu', [RestaurantController::class, 'showMenu'])->name('restaurants.menu');
@@ -63,20 +53,21 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-// Routes pour les restaurateurs authentifiés
 Route::middleware(['auth'])->group(function () {
     Route::controller(RestaurantController::class)->group(function () {
-        Route::get('/restaurants', 'index')->middleware('role:restaurateur')->name('restaurants.index');
-        Route::post('/restaurants', 'store')->middleware('role:restaurateur')->name('restaurants.store');
-        Route::get('/restaurants/create', 'create')->middleware('role:restaurateur')->name('restaurants.create');
-        Route::get('/restaurants/{restaurant}/edit', 'edit')->middleware('role:restaurateur')->name('restaurants.edit');
-        Route::put('/restaurants/{restaurant}', 'update')->middleware('role:restaurateur')->name('restaurants.update');
-        Route::delete('/restaurants/{restaurant}', 'destroy')->middleware('role:restaurateur')->name('restaurants.destroy');
-    });
-    
-    Route::resource('restaurants.categories', CategoryController::class)->middleware('role:restaurateur');
-    Route::resource('categories.items', ItemController::class)->middleware('role:restaurateur');
-    
+    Route::get('/restaurants', 'index')->name('restaurants.index'); // Tous peuvent voir
+    Route::get('/restaurants/{restaurant}', 'show')->name('restaurants.show'); // Tous peuvent voir
+    Route::get('/restaurants/{restaurant}/menu', 'showMenu')->name('restaurants.menu'); // Tous peuvent voir
+    // RESTAURATEUR SEULEMENT pour gestion
+    Route::post('/restaurants', 'store')->middleware('role:admin,restaurateur')->name('restaurants.store');
+    Route::get('/restaurants/create', 'create')->middleware('role:admin,restaurateur')->name('restaurants.create');
+    Route::get('/restaurants/{restaurant}/edit', 'edit')->middleware('role:admin,restaurateur')->name('restaurants.edit');
+    Route::put('/restaurants/{restaurant}', 'update')->middleware('role:admin,restaurateur')->name('restaurants.update');
+    Route::delete('/restaurants/{restaurant}', 'destroy')->middleware('role:admin,restaurateur')->name('restaurants.destroy');
+});
+    // Routes directes pour categories et items
+    Route::resource('categories', CategoryController::class)->middleware('role:admin,restaurateur');
+    Route::resource('items', ItemController::class)->middleware('role:admin,restaurateur');
     Route::controller(OrderController::class)->prefix('restaurants/{restaurant}')->group(function () {
         Route::get('/orders', 'index')->middleware('role:restaurateur')->name('restaurants.orders.index');
         Route::get('/orders/{order}', 'show')->middleware('role:restaurateur')->name('restaurants.orders.show');

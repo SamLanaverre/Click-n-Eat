@@ -4,20 +4,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
     <title>{{ config('app.name', 'Laravel') }}</title>
-
-    <!-- Google Font: Source Sans Pro -->
+    
+    <!-- AdminLTE CSS ONLY -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{ asset('vendor/@fortawesome/fontawesome-free/css/all.min.css') }}">
-    
-    <!-- AdminLTE CSS -->
-    <link rel="stylesheet" href="{{ asset('vendor/admin-lte/dist/css/adminlte.min.css') }}">
-    
-    <!-- Styles -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        /* Fix conflicts */
+        .content-wrapper { min-height: calc(100vh - 150px); }
+        .main-sidebar { z-index: 1038; }
+        .navbar { z-index: 1030; }
+    </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
@@ -48,9 +49,9 @@
                             <i class="fas fa-user-cog mr-2"></i> Profil
                         </a>
                         <div class="dropdown-divider"></div>
-                        <form method="POST" action="{{ route('logout') }}">
+                        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
     @csrf
-    <button type="submit" class="dropdown-item">
+    <button type="submit" class="dropdown-item" style="border: none; background: none; width: 100%; text-align: left;">
         <i class="fas fa-sign-out-alt mr-2"></i> Déconnexion
     </button>
 </form>
@@ -172,10 +173,9 @@
     </div>
     <!-- ./wrapper -->
 
-    <!-- Bootstrap 5 (CDN) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoJ1z9a6BvY0j1y5rZl+PBkO5y+1hb6N8wG7F3+2Q5V8Qbs" crossorigin="anonymous"></script>
-    <!-- Optionally, Popper is included in Bootstrap 5 bundle -->
-    <!-- Alpine.js (si nécessaire pour certains composants) -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- AdminLTE JS -->
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+    <!-- Bootstrap Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

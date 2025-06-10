@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creation category</title>
-</head>
-<body>
+@extends('layout.adminlte')
+@section('main')
     <h1>Creation category</h1>
     
     <a href="{{ route('categories.index') }}">Retour à la liste</a>

@@ -16,23 +16,9 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-    // Vérifie que la session n'est pas expirée
-    if (!session()->isStarted() || !session()->has('login_web')) {
-        Auth::guard($guard)->logout();
-        session()->invalidate();
-        session()->regenerateToken();
-        continue;
-    }
-    // Utilisateur authentifié, rediriger en fonction du rôle
-    $user = Auth::guard($guard)->user();
-    if ($user->isAdmin()) {
-        return redirect()->route('admin.dashboard');
-    } else if ($user->isRestaurateur()) {
-        return redirect()->route('restaurateur.dashboard');
-    } else {
-        return redirect()->route('client.dashboard');
-    }
-}
+                $user = Auth::guard($guard)->user();
+                return redirect()->route($user->getDashboardRoute());
+            }
         }
 
         return $next($request);

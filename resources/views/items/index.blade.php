@@ -1,4 +1,4 @@
-<x-app-layout>
+@extends('layout.adminlte')
     <h1 class="text-2xl font-bold mb-4">Items</h1>
 
     @if(auth()->user() && auth()->user()->isRestaurateur())
