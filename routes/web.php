@@ -12,7 +12,19 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\CheckRole;
 
 // Route de base - redirige vers login
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+
 Route::get('/', function () {
+    if (Auth::check() && Session::has('login_web')) {
+        // Session valide, rediriger selon le rôle
+        $user = Auth::user();
+        return redirect()->route($user->getDashboardRoute());
+    }
+    // Si la session est expirée, on logout pour éviter la redirection auto
+    Auth::logout();
+    Session::invalidate();
+    Session::regenerateToken();
     return redirect()->route('login');
 });
 

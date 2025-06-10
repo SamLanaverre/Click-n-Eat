@@ -49,11 +49,11 @@
                         </a>
                         <div class="dropdown-divider"></div>
                         <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="dropdown-item">
-                                <i class="fas fa-sign-out-alt mr-2"></i> Déconnexion
-                            </button>
-                        </form>
+    @csrf
+    <button type="submit" class="dropdown-item">
+        <i class="fas fa-sign-out-alt mr-2"></i> Déconnexion
+    </button>
+</form>
                     </div>
                 </li>
             </ul>
