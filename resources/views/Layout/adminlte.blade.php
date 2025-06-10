@@ -172,16 +172,10 @@
     </div>
     <!-- ./wrapper -->
 
-    <!-- jQuery -->
-    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-    
-    <!-- Bootstrap 4 -->
-    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    
-    <!-- AdminLTE App -->
-    <script src="{{ asset('vendor/admin-lte/dist/js/adminlte.min.js') }}"></script>
-    
-    <!-- Alpine.js -->
-    <script defer src="{{ asset('vendor/alpinejs/dist/cdn.min.js') }}"></script>
+    <!-- Bootstrap 5 (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoJ1z9a6BvY0j1y5rZl+PBkO5y+1hb6N8wG7F3+2Q5V8Qbs" crossorigin="anonymous"></script>
+    <!-- Optionally, Popper is included in Bootstrap 5 bundle -->
+    <!-- Alpine.js (si nécessaire pour certains composants) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
 </html>
