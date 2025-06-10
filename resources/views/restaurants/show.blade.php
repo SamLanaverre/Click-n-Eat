@@ -1,4 +1,4 @@
-@extends('layout.main')
+@extends('layout.adminlte')
 
 @section('main')
     <h1>Restaurants</h1>

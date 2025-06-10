@@ -16,126 +16,72 @@
 </head>
 <body class="font-sans antialiased bg-gray-100">
     <div class="min-h-screen" x-data="{ open: false }">
-        <!-- Navigation -->
-        <nav class="bg-white border-b border-gray-100">
+        <!-- Flowbite Navbar -->
+        <nav class="bg-white border-b border-gray-200 dark:bg-gray-900 dark:border-gray-700">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <div class="flex">
-                        <!-- Logo -->
-                        <div class="shrink-0 flex items-center">
-                            <a href="{{ route('dashboard') }}">
-                                <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                            </a>
-                        </div>
-
-                        <!-- Navigation Links (desktop) -->
-                        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                            <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                                {{ __('Accueil') }}
-                            </x-nav-link>
-                            <x-nav-link :href="route('restaurants.index')" :active="request()->routeIs('restaurants.*')">
-                                {{ __('Restaurants') }}
-                            </x-nav-link>
+                <div class="flex flex-wrap items-center justify-between h-16">
+                    <!-- Logo -->
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
+                        <x-application-logo class="h-9 w-auto text-primary-600" />
+                        <span class="self-center text-xl font-semibold whitespace-nowrap text-primary-700">{{ config('app.name', 'ClicknEat') }}</span>
+                    </a>
+                    <!-- Burger button -->
+                    <button data-collapse-toggle="navbar-client" type="button" class="inline-flex items-center p-2 ml-3 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-client" aria-expanded="false">
+                        <span class="sr-only">Ouvrir le menu principal</span>
+                        <svg class="w-6 h-6" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                    <!-- Links & User Dropdown -->
+                    <div class="hidden w-full md:flex md:w-auto" id="navbar-client">
+                        <ul class="flex flex-col font-medium mt-4 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900">
+                            <li>
+                                <a href="{{ route('dashboard') }}" class="block py-2 pl-3 pr-4 text-gray-900 rounded md:bg-transparent md:p-0 md:text-primary-700 dark:text-white {{ request()->routeIs('dashboard') ? 'md:text-primary-600 font-bold' : '' }}">Accueil</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('restaurants.index') }}" class="block py-2 pl-3 pr-4 text-gray-900 rounded md:bg-transparent md:p-0 md:text-primary-700 dark:text-white {{ request()->routeIs('restaurants.*') ? 'md:text-primary-600 font-bold' : '' }}">Restaurants</a>
+                            </li>
                             @auth
-                                <x-nav-link :href="route('orders.index')" :active="request()->routeIs('orders.*')">
-                                    {{ __('Mes Commandes') }}
-                                </x-nav-link>
-                            @endauth
-                        </div>
-                    </div>
-
-                    <!-- Settings Dropdown (desktop) -->
-                    <div class="hidden sm:flex sm:items-center sm:ml-6">
-                        @auth
-                            <x-dropdown align="right" width="48">
-                                <x-slot name="trigger">
-                                    <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                            <li>
+                                <a href="{{ route('orders.index') }}" class="block py-2 pl-3 pr-4 text-gray-900 rounded md:bg-transparent md:p-0 md:text-primary-700 dark:text-white {{ request()->routeIs('orders.*') ? 'md:text-primary-600 font-bold' : '' }}">Mes Commandes</a>
+                            </li>
+                            <li>
+                                <!-- Dropdown utilisateur -->
+                                <button id="user-menu-button" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom-end" type="button" class="flex items-center text-sm rounded-full focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600">
+                                    <span class="sr-only">Ouvrir menu utilisateur</span>
+                                    <img class="w-8 h-8 rounded-full" src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=3B82F6&color=fff" alt="avatar">
+                                </button>
+                                <div id="user-dropdown" class="z-50 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                                    <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
                                         <div>{{ Auth::user()->name }}</div>
-                                        <div class="ml-1">
-                                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                            </svg>
-                                        </div>
-                                    </button>
-                                </x-slot>
-
-                                <x-slot name="content">
-                                    <x-dropdown-link :href="route('profile.edit')">
-                                        {{ __('Profil') }}
-                                    </x-dropdown-link>
-
-                                    <!-- Authentication -->
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <x-dropdown-link :href="route('logout')"
-                                                onclick="event.preventDefault();
-                                                            this.closest('form').submit();">
-                                            {{ __('Se déconnecter') }}
-                                        </x-dropdown-link>
-                                    </form>
-                                </x-slot>
-                            </x-dropdown>
-                        @else
-                            <div class="space-x-4">
-                                <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Se connecter</a>
-                                <a href="{{ route('register') }}" class="text-sm text-gray-700 underline">S'inscrire</a>
-                            </div>
-                        @endauth
+                                        <div class="font-medium truncate">{{ Auth::user()->email }}</div>
+                                    </div>
+                                    <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="user-menu-button">
+                                        <li>
+                                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Profil</a>
+                                        </li>
+                                    </ul>
+                                    <div class="py-1">
+                                        <form method="POST" action="{{ route('logout') }}">
+                                            @csrf
+                                            <button type="submit" class="block w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-red-400">Se déconnecter</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </li>
+                            @endauth
+                            @guest
+                            <li>
+                                <a href="{{ route('login') }}" class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary-700 md:p-0 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Se connecter</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('register') }}" class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary-700 md:p-0 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">S'inscrire</a>
+                            </li>
+                            @endguest
+                        </ul>
                     </div>
-
-                    <!-- Hamburger (mobile) -->
-                    <div class="-mr-2 flex items-center sm:hidden">
-                        <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out" aria-label="Ouvrir le menu">
-                            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                                <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <!-- Mobile menu, show/hide based on menu state. -->
-            <div class="sm:hidden" x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" @click.away="open = false">
-                <div class="pt-2 pb-3 space-y-1">
-                    <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Accueil') }}
-                    </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('restaurants.index')" :active="request()->routeIs('restaurants.*')">
-                        {{ __('Restaurants') }}
-                    </x-responsive-nav-link>
-                    @auth
-                        <x-responsive-nav-link :href="route('orders.index')" :active="request()->routeIs('orders.*')">
-                            {{ __('Mes Commandes') }}
-                        </x-responsive-nav-link>
-                    @endauth
-                </div>
-                <div class="pt-4 pb-1 border-t border-gray-200">
-                    @auth
-                        <div class="px-4">
-                            <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                            <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-                        </div>
-                        <div class="mt-3 space-y-1">
-                            <x-responsive-nav-link :href="route('profile.edit')">
-                                {{ __('Profil') }}
-                            </x-responsive-nav-link>
-                            <form method="POST" action="{{ route('logout') }}" x-data>
-                                @csrf
-                                <x-responsive-nav-link :href="route('logout')"
-                                        onclick="event.preventDefault(); this.closest('form').submit();">
-                                    {{ __('Se déconnecter') }}
-                                </x-responsive-nav-link>
-                            </form>
-                        </div>
-                    @else
-                        <div class="mt-3 space-y-1 px-4">
-                            <a href="{{ route('login') }}" class="block text-sm text-gray-700 underline">Se connecter</a>
-                            <a href="{{ route('register') }}" class="block text-sm text-gray-700 underline">S'inscrire</a>
-                        </div>
-                    @endauth
                 </div>
             </div>
         </nav>
+        <!-- FIN NAVBAR FLOWBITE -->
 
         <!-- Page Heading -->
         @if (isset($header))

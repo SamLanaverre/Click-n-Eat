@@ -78,10 +78,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Routes pour l'accès aux catégories et items (lecture seule)
-    Route::resource('categories', CategoryController::class)->only(['index', 'show']);
-    Route::resource('items', ItemController::class)->only(['index', 'show']);
-    
     // Permet d'accéder au restaurant
     Route::get('/restaurants/{restaurant}', [RestaurantController::class, 'show'])->name('restaurants.show');
 });
