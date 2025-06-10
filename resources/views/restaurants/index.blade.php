@@ -1,51 +1,60 @@
-<x-adminlte-layout>
-    @section('header', 'Restaurants')
-    
-    @section('content')
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Liste des restaurants</h3>
-            <div class="card-tools">
+@extends('layout.adminlte')
+
+@section('main')
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Restaurants</h1>
+        @auth
+            @if(auth()->user()->role === 'admin' || auth()->user()->role === 'restaurateur')
                 <a href="{{ route('restaurants.create') }}" class="btn btn-primary">
                     <i class="fas fa-plus"></i> Créer un restaurant
                 </a>
+            @endif
+        @endauth
+    </div>
+    <div class="row">
+        @forelse($restaurants as $restaurant)
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $restaurant->name }}</h5>
+                        <p class="card-text text-muted mb-1"><i class="fas fa-map-marker-alt"></i> {{ $restaurant->address }}</p>
+                        <p class="card-text">{{ Str::limit($restaurant->description, 80) }}</p>
+                        <div class="mb-2">
+                            <span class="badge bg-light text-dark">{{ $restaurant->categories->count() }} catégories</span>
+                            <span class="badge bg-light text-dark">{{ $restaurant->categories->sum(fn($c) => $c->items->count()) }} plats</span>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="{{ route('restaurants.show', $restaurant) }}" class="btn btn-outline-info btn-sm">
+                                <i class="fas fa-eye"></i> Voir fiche
+                            </a>
+                            @auth
+                                @if(auth()->user()->role === 'client')
+                                    <a href="{{ route('restaurants.menu', $restaurant) }}" class="btn btn-success btn-sm">
+                                        <i class="fas fa-shopping-basket"></i> Commander
+                                    </a>
+                                @endif
+                                @if(auth()->user()->role === 'admin' || (auth()->user()->role === 'restaurateur' && auth()->user()->id === $restaurant->owner_id))
+                                    <a href="{{ route('restaurants.edit', $restaurant) }}" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i> Modifier
+                                    </a>
+                                    <a href="{{ route('categories.index', ['restaurant' => $restaurant->id]) }}" class="btn btn-info btn-sm">
+                                        <i class="fas fa-utensils"></i> Gérer menu
+                                    </a>
+                                    <form action="{{ route('restaurants.destroy', $restaurant) }}" method="POST" class="d-inline-block" onsubmit="return confirm('Supprimer ce restaurant ?');">
+                                        @csrf
+                                        @method('delete')
+                                        <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Supprimer</button>
+                                    </form>
+                                @endif
+                            @endauth
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="card-body table-responsive p-0">
-            <table class="table table-hover text-nowrap">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nom</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($restaurants as $restaurant)
-                        <tr>
-                            <td>{{ $restaurant->id }}</td>
-                            <td>{{ $restaurant->name }}</td>
-                            <td>
-                                <a href="{{ route('restaurants.show', $restaurant->id) }}" class="btn btn-sm btn-info">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="{{ route('restaurants.edit', $restaurant->id) }}" class="btn btn-sm btn-warning">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('restaurants.destroy', $restaurant->id) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('delete')
-                                    <input type="hidden" name="id" value="{{ $restaurant->id }}">
-                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce restaurant?')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+        @empty
+            <div class="col-12 text-center text-muted">Aucun restaurant pour l’instant.</div>
+        @endforelse
     </div>
     @endsection
 </x-adminlte-layout>

@@ -13,14 +13,20 @@ class CheckRole
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, string $role): Response
+    public function handle(Request $request, Closure $next, ...$roles): Response
     {
         if (!$request->user()) {
             return redirect()->route('login');
         }
 
-        if ($request->user()->role !== $role) {
-            return redirect()->route($request->user()->role . '.dashboard');
+        // Supporte 'role:admin,restaurateur' ou plusieurs paramètres
+        $userRole = $request->user()->role;
+        $roles = collect($roles)->flatMap(function ($role) {
+            return explode(',', $role);
+        })->map(fn($r) => trim($r))->unique();
+
+        if (!$roles->contains($userRole)) {
+            return redirect()->route($userRole . '.dashboard');
         }
 
         return $next($request);

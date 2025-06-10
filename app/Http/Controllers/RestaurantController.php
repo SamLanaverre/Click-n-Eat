@@ -70,6 +70,18 @@ class RestaurantController extends Controller
             ->with('success', 'Restaurant supprimé avec succès.');
     }
 
+    public function show(Restaurant $restaurant): View
+    {
+        // Chargement des relations utiles pour la fiche détaillée
+        $restaurant->load(['categories.items']);
+        // Statistiques rapides (exemple)
+        $ordersToday = $restaurant->orders()->whereDate('created_at', today())->count();
+        return view('restaurants.show', [
+            'restaurant' => $restaurant,
+            'ordersToday' => $ordersToday,
+        ]);
+    }
+
     public function showMenu(Restaurant $restaurant): View
     {
         return view('restaurants.menu', [
