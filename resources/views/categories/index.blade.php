@@ -6,9 +6,11 @@
         <div class="card-header">
             <h3 class="card-title">Liste des catégories</h3>
             <div class="card-tools">
+                @if(auth()->user() && auth()->user()->isRestaurateur())
                 <a href="{{ route('categories.create') }}" class="btn btn-primary">
                     <i class="fas fa-plus"></i> Créer une catégorie
                 </a>
+                @endif
             </div>
         </div>
         <div class="card-body table-responsive p-0">
@@ -33,6 +35,7 @@
                                 <a href="{{ route('categories.show', $category->id) }}" class="btn btn-sm btn-info">
                                     <i class="fas fa-eye"></i>
                                 </a>
+                                @if(auth()->user() && auth()->user()->isRestaurateur())
                                 <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-warning">
                                     <i class="fas fa-edit"></i>
                                 </a>
@@ -44,6 +47,7 @@
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
+                                @endif
                             </td>
                         </tr>
                     @endforeach

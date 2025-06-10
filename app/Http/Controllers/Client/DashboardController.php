@@ -11,8 +11,10 @@ class DashboardController extends Controller
 {
     public function index(): View
     {
-        $restaurants = Restaurant::with(['categories.items' => function($query) {
-            $query->where('is_active', true);
+        $restaurants = Restaurant::with(['categories' => function($query) {
+            $query->with(['items' => function($itemQuery) {
+                $itemQuery->where('is_active', true);
+            }]);
         }])->get();
 
         return view('client.dashboard', [

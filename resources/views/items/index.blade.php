@@ -1,11 +1,13 @@
 <x-app-layout>
     <h1 class="text-2xl font-bold mb-4">Items</h1>
 
+    @if(auth()->user() && auth()->user()->isRestaurateur())
     <div class="mb-4">
         <a href="{{ route('items.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             Créer un item
         </a>
     </div>
+    @endif
 
     @if($items->isEmpty())
         <p class="text-gray-500">Aucun item disponible.</p>
@@ -34,12 +36,14 @@
                             <td class="px-6 py-4 whitespace-nowrap">{{ $item->is_active ? 'Oui' : 'Non' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap flex space-x-2">
                                 <a href="{{ route('items.show', $item->id) }}" class="text-blue-600 hover:text-blue-900">Voir</a>
+                                @if(auth()->user() && auth()->user()->isRestaurateur())
                                 <a href="{{ route('items.edit', $item->id) }}" class="text-indigo-600 hover:text-indigo-900">Modifier</a>
                                 <form action="{{ route('items.destroy', $item->id) }}" method="POST" class="inline">
                                     @csrf
                                     @method('delete')
                                     <button type="submit" class="text-red-600 hover:text-red-900">Supprimer</button>
                                 </form>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
