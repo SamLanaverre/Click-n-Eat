@@ -30,7 +30,7 @@ class Item extends Model
      */
     public function restaurants()
     {
-        return $this->belongsToMany(Restaurant::class)
+        return $this->belongsToMany(Restaurant::class, 'restaurant_item')
                     ->withPivot('price', 'is_active')
                     ->withTimestamps();
     }

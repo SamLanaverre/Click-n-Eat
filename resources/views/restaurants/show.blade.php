@@ -1,7 +1,26 @@
-@extends('layout.app')
+@extends('layout.adminlte')
+
+@section('title', isset($restaurant) ? $restaurant->name : 'Détail du restaurant')
+
+@section('content_header')
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>{{ isset($restaurant) ? $restaurant->name : 'Détail du restaurant' }}</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Tableau de bord</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('restaurants.index') }}">Restaurants</a></li>
+                    <li class="breadcrumb-item active">{{ isset($restaurant) ? $restaurant->name : 'Détail' }}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+@endsection
 
 @section('content')
-<div class="container py-4">
+<div class="container-fluid">
     <a href="{{ route('restaurants.index') }}" class="btn btn-secondary mb-3"><i class="fas fa-arrow-left"></i> Retour à la liste</a>
     
     @if(session('success'))

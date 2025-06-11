@@ -69,6 +69,8 @@ Route::controller(CategoryController::class)->group(function () {
     Route::get('/categories', 'index')->name('categories.index');
     Route::get('/categories/{category}', 'show')->name('categories.show');
     Route::get('/categories/{category}/restaurants', 'restaurants')->name('categories.restaurants');
+    Route::get('/categories/{category}/edit', 'edit')->name('categories.edit');
+    Route::put('/categories/{category}', 'update')->name('categories.update');
 });
 
 // Routes protégées par authentification

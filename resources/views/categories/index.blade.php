@@ -53,16 +53,14 @@
                                 </div>
                                 <div class="card-footer bg-white">
                                     <div class="btn-group">
-                                        <a href="{{ route('categories.show', $category) }}" class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye"></i> Détails
-                                        </a>
-                                        <a href="{{ route('categories.restaurants', $category) }}" class="btn btn-success btn-sm">
-                                            <i class="fas fa-utensils"></i> Restaurants
-                                        </a>
                                         @if(auth()->user() && auth()->user()->isAdmin())
-                                        <a href="{{ route('admin.categories.edit', $category) }}" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-edit"></i> Éditer
-                                        </a>
+                                            <a href="{{ route('admin.categories.edit', $category) }}" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i> Éditer
+                                            </a>
+                                        @else
+                                            <a href="{{ route('categories.show', $category) }}" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-eye"></i> Détails
+                                            </a>
                                         @endif
                                     </div>
                                 </div>

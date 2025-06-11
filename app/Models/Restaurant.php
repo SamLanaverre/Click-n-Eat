@@ -45,7 +45,7 @@ class Restaurant extends Model
      */
     public function items()
     {
-        return $this->belongsToMany(Item::class)
+        return $this->belongsToMany(Item::class, 'restaurant_item')
                     ->withPivot('price', 'is_active')
                     ->withTimestamps();
     }
