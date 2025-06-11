@@ -202,7 +202,9 @@ class RestaurantController extends Controller
 
     /**
      * Affiche le menu complet d'un restaurant
+     * Cette méthode est accessible aux utilisateurs authentifiés
      */
+    #[Authenticate]
     public function showMenu(Restaurant $restaurant): View
     {
         // Charge les catégories et items actifs pour le menu public
@@ -210,8 +212,15 @@ class RestaurantController extends Controller
             $query->where('is_active', true);
         }]);
         
+        // Vérifier si l'utilisateur peut gérer le menu (admin ou restaurateur propriétaire)
+        $canManage = false;
+        if (Auth::check()) {
+            $canManage = Auth::user()->can('manageMenu', $restaurant);
+        }
+        
         return view('restaurants.menu', [
-            'restaurant' => $restaurant
+            'restaurant' => $restaurant,
+            'canManage' => $canManage
         ]);
     }
 }

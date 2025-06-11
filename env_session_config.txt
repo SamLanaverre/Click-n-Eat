@@ -1,0 +1,7 @@
+# Configuration recommandée pour les sessions
+# Copiez ces lignes dans votre fichier .env
+
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
+SESSION_SECURE_COOKIE=false
+SESSION_COOKIE=clickneat_session

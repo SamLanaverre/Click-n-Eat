@@ -1,9 +1,17 @@
 <x-guest-layout>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
+    
+    <!-- Session Error -->
+    @if (session('error'))
+        <div class="mb-4 font-medium text-sm text-red-600">
+            {{ session('error') }}
+        </div>
+    @endif
 
     <form method="POST" action="{{ route('login') }}">
-        @csrf
+        {{ csrf_field() }}
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
         <!-- Email Address -->
         <div>

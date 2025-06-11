@@ -9,14 +9,19 @@ class RestaurateurMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!$request->user() || $request->user()->role !== 'restaurateur') {
-            if ($request->user()) {
-                // Utiliser la méthode getDashboardRoute() pour obtenir la route appropriée
-                return redirect()->route($request->user()->getDashboardRoute());
-            }
+        // Vérifier si l'utilisateur est authentifié
+        if (!$request->user()) {
+            // L'utilisateur n'est pas authentifié, rediriger vers la page de connexion
             return redirect()->route('login');
         }
+        
+        // Vérifier si l'utilisateur a le rôle restaurateur
+        if ($request->user()->role !== 'restaurateur') {
+            // L'utilisateur est authentifié mais n'a pas le rôle restaurateur, rediriger vers son dashboard approprié
+            return redirect()->route($request->user()->getDashboardRoute());
+        }
 
+        // L'utilisateur est authentifié et a le rôle restaurateur, continuer
         return $next($request);
     }
 }

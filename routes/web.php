@@ -18,6 +18,21 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Route spéciale pour forcer la déconnexion et nettoyer les sessions
+Route::get('/force-logout', function () {
+    // Forcer la déconnexion
+    auth()->logout();
+    
+    // Invalider la session
+    session()->invalidate();
+    
+    // Régénérer le jeton CSRF
+    session()->regenerateToken();
+    
+    // Rediriger vers la page de connexion
+    return redirect()->route('login')->with('message', 'Vous avez été déconnecté avec succès.');
+})->name('force-logout');
+
 // Route de test temporaire
 Route::get('/test', function () {
     return view('test');
@@ -40,29 +55,33 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Routes pour les dashboards spécifiques aux rôles
-Route::middleware(['auth'])->group(function () {
-    // Admin dashboard
-    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
-        ->middleware('role:admin')
-        ->name('admin.dashboard');
-    
-    // Client dashboard
-    Route::get('/client/dashboard', [ClientDashboardController::class, 'index'])
-        ->middleware('role:client')
-        ->name('client.dashboard');
-    
-    // Restaurateur dashboard
-    Route::get('/restaurant/dashboard', [RestaurantDashboardController::class, 'index'])
-        ->middleware('role:restaurateur')
-        ->name('restaurant.dashboard');
-});
+// Utilisation de middleware auth explicite pour chaque route
+
+// Admin dashboard - protégé par auth et middleware admin
+Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.dashboard');
+
+// Client dashboard - protégé par auth et middleware client
+Route::get('/client/dashboard', [ClientDashboardController::class, 'index'])
+    ->middleware(['auth', 'role:client'])
+    ->name('client.dashboard');
+
+// Restaurateur dashboard - protégé par auth et middleware restaurateur
+Route::get('/restaurant/dashboard', [RestaurantDashboardController::class, 'index'])
+    ->middleware(['auth', 'role:restaurateur'])
+    ->name('restaurant.dashboard');
 
 // Routes publiques pour les restaurants et les catégories
 Route::controller(RestaurantController::class)->group(function () {
     Route::get('/restaurants', 'index')->name('restaurants.index');
     Route::get('/restaurants/{restaurant}', 'show')->name('restaurants.show');
-    Route::get('/restaurants/{restaurant}/menu', 'showMenu')->name('restaurants.menu');
 });
+
+// Route spécifique pour le menu des restaurants - accessible à tous les utilisateurs authentifiés
+Route::get('/restaurants/{restaurant}/menu', [RestaurantController::class, 'showMenu'])
+    ->middleware(['auth'])
+    ->name('restaurants.menu');
 
 // Routes publiques pour les catégories
 Route::controller(CategoryController::class)->group(function () {

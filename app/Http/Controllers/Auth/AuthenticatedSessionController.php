@@ -24,11 +24,24 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
-
-        $request->session()->regenerate();
-
-        return redirect()->route(Auth::user()->getDashboardRoute());
+        try {
+            // Authentifier l'utilisateur
+            $request->authenticate();
+            
+            // Régénérer la session pour éviter les attaques de fixation de session
+            $request->session()->regenerate();
+            
+            // Ajouter le jeton CSRF à la session
+            $request->session()->put('_token', csrf_token());
+            
+            // Rediriger vers le dashboard approprié
+            return redirect()->route(Auth::user()->getDashboardRoute());
+        } catch (\Exception $e) {
+            // En cas d'erreur, rediriger vers la page de connexion avec un message d'erreur
+            return redirect()->route('login')
+                ->withInput($request->only('email'))
+                ->withErrors(['email' => 'Une erreur s\'est produite lors de la connexion. Veuillez réessayer.']);
+        }
     }
 
     /**
