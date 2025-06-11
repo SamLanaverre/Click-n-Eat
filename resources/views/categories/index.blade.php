@@ -1,57 +1,87 @@
-@extends('layout.app')
+@extends('layout.adminlte')
 
-@section('title', 'Catégories')
+@section('header', 'Catégories')
+
+@section('content_header')
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Catégories</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Tableau de bord</a></li>
+                    <li class="breadcrumb-item active">Catégories</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+@endsection
 
 @section('content')
-<div class="container py-5">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h1>Catégories</h1>
-            <p class="lead">Explorez nos catégories de plats et découvrez les restaurants qui les proposent.</p>
-        </div>
-        <div class="col-md-4 text-right">
-            @if(auth()->user() && (auth()->user()->isAdmin() || auth()->user()->isRestaurateur()))
-            <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Créer une catégorie
-            </a>
+    <div class="container-fluid">
+        @if (session('status'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('status') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Liste des catégories</h3>
+                <div class="card-tools">
+                    @if(auth()->user() && (auth()->user()->isAdmin() || auth()->user()->isRestaurateur()))
+                    <a href="{{ route('admin.categories.create') }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i> Nouvelle catégorie
+                    </a>
+                    @endif
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    @forelse($categories as $category)
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ $category->name }}</h5>
+                                    <p class="card-text">
+                                        <span class="badge badge-info">{{ $category->items_count ?? 0 }} items</span>
+                                    </p>
+                                </div>
+                                <div class="card-footer bg-white">
+                                    <div class="btn-group">
+                                        <a href="{{ route('categories.show', $category) }}" class="btn btn-info btn-sm">
+                                            <i class="fas fa-eye"></i> Détails
+                                        </a>
+                                        <a href="{{ route('categories.restaurants', $category) }}" class="btn btn-success btn-sm">
+                                            <i class="fas fa-utensils"></i> Restaurants
+                                        </a>
+                                        @if(auth()->user() && auth()->user()->isAdmin())
+                                        <a href="{{ route('admin.categories.edit', $category) }}" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i> Éditer
+                                        </a>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                Aucune catégorie disponible pour le moment.
+                            </div>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+            @if($categories instanceof \Illuminate\Pagination\LengthAwarePaginator)
+            <div class="card-footer clearfix">
+                {{ $categories->links() }}
+            </div>
             @endif
         </div>
     </div>
-
-    <div class="row">
-        @forelse($categories as $category)
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $category->name }}</h5>
-                        <p class="card-text">
-                            <span class="badge badge-primary">{{ $category->items_count }} items</span>
-                        </p>
-                    </div>
-                    <div class="card-footer bg-white">
-                        <div class="btn-group w-100">
-                            <a href="{{ route('categories.show', $category) }}" class="btn btn-outline-primary">
-                                <i class="fas fa-eye"></i> Détails
-                            </a>
-                            <a href="{{ route('categories.restaurants', $category) }}" class="btn btn-outline-success">
-                                <i class="fas fa-utensils"></i> Restaurants
-                            </a>
-                            @if(auth()->user() && auth()->user()->isAdmin())
-                            <a href="{{ route('admin.categories.edit', $category) }}" class="btn btn-outline-warning">
-                                <i class="fas fa-edit"></i> Éditer
-                            </a>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @empty
-            <div class="col-12">
-                <div class="alert alert-info">
-                    Aucune catégorie disponible pour le moment.
-                </div>
-            </div>
-        @endforelse
-    </div>
-</div>
 @endsection
