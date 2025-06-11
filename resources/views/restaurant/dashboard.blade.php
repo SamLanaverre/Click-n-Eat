@@ -43,7 +43,7 @@
                             <a href="{{ route('restaurants.edit', $restaurant) }}" class="btn btn-sm btn-outline-primary">
                                 <i class="fas fa-edit mr-1"></i> Modifier
                             </a>
-                            <a href="{{ route('restaurants.categories.index', $restaurant) }}" class="btn btn-sm btn-outline-success">
+                            <a href="{{ route('restaurants.menu', $restaurant) }}" class="btn btn-sm btn-outline-success">
                                 <i class="fas fa-list mr-1"></i> Gérer le menu
                             </a>
                         </div>
@@ -115,21 +115,3 @@
     </div>
 @endif
 @endsection
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-
-            @if($restaurants->isEmpty())
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-center">
-                        <p class="text-gray-500 dark:text-gray-400">Vous n'avez pas encore de restaurant</p>
-                        <a href="{{ route('restaurants.create') }}" class="mt-4 inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
-                            Ajouter votre premier restaurant
-                        </a>
-                    </div>
-                </div>
-            @endif
-        </div>
-    </div>
-</x-app-layout>

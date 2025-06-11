@@ -19,6 +19,6 @@ class ClientLayout extends Component
      */
     public function render()
     {
-        return view('layout.client');
+        return view('layouts.client');
     }
 }

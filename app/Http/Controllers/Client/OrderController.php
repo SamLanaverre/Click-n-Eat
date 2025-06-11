@@ -15,7 +15,7 @@ class OrderController extends Controller
      */
     public function index(): View
     {
-        $orders = Auth::user()->orders()->with('restaurant')->latest()->get();
+        $orders = Auth::user()->orders()->with('restaurant')->latest()->paginate(10);
         
         return view('client.orders.index', [
             'orders' => $orders

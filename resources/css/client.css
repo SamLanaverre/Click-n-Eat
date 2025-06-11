@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Styles spécifiques au client */
+.client-sidebar {
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 250px;
+    z-index: 40;
+    transition: all 0.3s;
+}
+
+.client-content {
+    margin-left: 250px;
+    min-height: 100vh;
+    transition: all 0.3s;
+}
+
+@media (max-width: 768px) {
+    .client-sidebar.mobile-hidden {
+        transform: translateX(-100%);
+    }
+    .client-content {
+        margin-left: 0;
+    }
+    .client-content.sidebar-open {
+        margin-left: 250px;
+    }
+}
