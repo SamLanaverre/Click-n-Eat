@@ -4,8 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Restaurant;
-use App\Models\Category;
-use App\Models\Item;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -17,7 +15,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-
         $this->call([
             AdminUserSeeder::class,
             ClientUserSeeder::class,
@@ -27,10 +24,8 @@ class DatabaseSeeder extends Seeder
         // Crée 12 restaurants
         Restaurant::factory(12)->create();
 
-        // Crée 12 catégories
-        Category::factory(12)->create();
-
-        // Crée 10 items (avec des catégories existantes)
-        Item::factory(10)->create(); // Ajoute 10 items
+        // Utiliser le nouveau seeder pour les catégories et items globaux
+        // Commentez cette ligne si vous souhaitez conserver les anciennes données
+        $this->call(GlobalCategoriesAndItemsSeeder::class);
     }
 }

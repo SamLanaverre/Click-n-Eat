@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RestaurantController;
+use App\Http\Controllers\RestaurantMenuController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
 use App\Http\Controllers\Restaurant\DashboardController as RestaurantDashboardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -55,11 +57,18 @@ Route::middleware(['auth'])->group(function () {
         ->name('restaurant.dashboard');
 });
 
-// Routes publiques pour les restaurants
+// Routes publiques pour les restaurants et les catégories
 Route::controller(RestaurantController::class)->group(function () {
     Route::get('/restaurants', 'index')->name('restaurants.index');
     Route::get('/restaurants/{restaurant}', 'show')->name('restaurants.show');
     Route::get('/restaurants/{restaurant}/menu', 'showMenu')->name('restaurants.menu');
+});
+
+// Routes publiques pour les catégories
+Route::controller(CategoryController::class)->group(function () {
+    Route::get('/categories', 'index')->name('categories.index');
+    Route::get('/categories/{category}', 'show')->name('categories.show');
+    Route::get('/categories/{category}/restaurants', 'restaurants')->name('categories.restaurants');
 });
 
 // Routes protégées par authentification
@@ -80,8 +89,13 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/restaurants/{restaurant}', 'destroy')->name('restaurants.destroy');
     });
     
-    // Gestion des catégories - protégée par policies
-    Route::resource('restaurants.categories', CategoryController::class)->except(['index', 'show']);
+    // Gestion des menus de restaurant - protégée par policies
+    Route::controller(RestaurantMenuController::class)->prefix('restaurants/{restaurant}/menu')->group(function () {
+        Route::get('/', 'manage')->name('restaurants.menu.manage');
+        Route::post('/items', 'addItem')->name('restaurants.menu.addItem');
+        Route::put('/items/{item}', 'updateItem')->name('restaurants.menu.updateItem');
+        Route::delete('/items/{item}', 'removeItem')->name('restaurants.menu.removeItem');
+    });
     
     // Routes directes pour l'administration
     Route::middleware('role:admin,restaurateur')->group(function () {
@@ -96,27 +110,26 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/admin/orders', [App\Http\Controllers\OrderController::class, 'adminIndex'])->name('admin.orders.index');
         });
         
-        // Routes pour les catégories en administration
-        Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
-        Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
-        Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
-        Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
-        Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
-        Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
-        Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+        // Routes pour les catégories globales en administration
+        Route::get('/admin/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
+        Route::post('/admin/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+        Route::get('/admin/categories/{category}/edit', [CategoryController::class, 'edit'])->name('admin.categories.edit');
+        Route::put('/admin/categories/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
+        Route::delete('/admin/categories/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
         
-        // Routes pour les items en administration
-        Route::get('/items', [ItemController::class, 'index'])->name('items.index');
-        Route::get('/items/create', [ItemController::class, 'create'])->name('items.create');
-        Route::post('/items', [ItemController::class, 'store'])->name('items.store');
-        Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show');
-        Route::get('/items/{item}/edit', [ItemController::class, 'edit'])->name('items.edit');
-        Route::put('/items/{item}', [ItemController::class, 'update'])->name('items.update');
-        Route::delete('/items/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
+        // Routes pour les items globaux en administration
+        Route::get('/admin/items', [ItemController::class, 'index'])->name('admin.items.index');
+        Route::get('/admin/items/create', [ItemController::class, 'create'])->name('admin.items.create');
+        Route::post('/admin/items', [ItemController::class, 'store'])->name('admin.items.store');
+        Route::get('/admin/items/{item}', [ItemController::class, 'show'])->name('admin.items.show');
+        Route::get('/admin/items/{item}/edit', [ItemController::class, 'edit'])->name('admin.items.edit');
+        Route::put('/admin/items/{item}', [ItemController::class, 'update'])->name('admin.items.update');
+        Route::delete('/admin/items/{item}', [ItemController::class, 'destroy'])->name('admin.items.destroy');
     });
     
-    // Gestion des items - protégée par policies
-    Route::resource('categories.items', ItemController::class)->except(['index', 'show']);
+    // Routes publiques pour les items
+    Route::get('/items', [ItemController::class, 'index'])->name('items.index');
+    Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show');
     
     // Commandes pour les clients
     Route::controller(OrderController::class)->group(function () {

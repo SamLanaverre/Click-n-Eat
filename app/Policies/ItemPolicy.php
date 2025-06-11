@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Item;
 use App\Models\User;
+use App\Models\Restaurant;
 use Illuminate\Auth\Access\Response;
 
 class ItemPolicy
@@ -41,9 +42,9 @@ class ItemPolicy
      */
     public function create(User $user): bool
     {
-        // Vérifie si l'utilisateur est un restaurateur
-        // La vérification de propriété du restaurant sera faite dans le contrôleur
-        return $user->role === 'restaurateur';
+        // Seuls les administrateurs peuvent créer des items globaux
+        // (déjà géré par la méthode before)
+        return false;
     }
 
     /**
@@ -51,11 +52,8 @@ class ItemPolicy
      */
     public function update(User $user, Item $item): bool
     {
-        // Restaurateur peut modifier ses propres items
-        if ($user->role === 'restaurateur') {
-            return $item->category->restaurant->user_id === $user->id;
-        }
-        
+        // Seuls les administrateurs peuvent modifier des items globaux
+        // (déjà géré par la méthode before)
         return false;
     }
 
@@ -64,11 +62,9 @@ class ItemPolicy
      */
     public function delete(User $user, Item $item): bool
     {
-        // Restaurateur peut supprimer ses propres items
-        if ($user->role === 'restaurateur') {
-            return $item->category->restaurant->user_id === $user->id;
-        }
-        
+        // Seuls les administrateurs peuvent supprimer des items globaux,
+        // et seulement s'ils ne sont pas utilisés par des restaurants
+        // La vérification de l'utilisation sera faite dans le contrôleur
         return false;
     }
 
@@ -77,11 +73,8 @@ class ItemPolicy
      */
     public function restore(User $user, Item $item): bool
     {
-        // Restaurateur peut restaurer ses propres items
-        if ($user->role === 'restaurateur') {
-            return $item->category->restaurant->user_id === $user->id;
-        }
-        
+        // Seuls les administrateurs peuvent restaurer des items globaux
+        // (déjà géré par la méthode before)
         return false;
     }
 
@@ -90,18 +83,45 @@ class ItemPolicy
      */
     public function forceDelete(User $user, Item $item): bool
     {
-        // Seul l'admin peut supprimer définitivement
-        return false; // Déjà géré par before() pour admin
+        // Seuls les administrateurs peuvent supprimer définitivement des items globaux
+        // (déjà géré par la méthode before)
+        return false;
     }
     
     /**
-     * Determine whether the user can toggle the active status of the item.
+     * Determine whether the user can add an item to a restaurant menu.
      */
-    public function toggleActive(User $user, Item $item): bool
+    public function addToRestaurant(User $user, Item $item, Restaurant $restaurant): bool
     {
-        // Restaurateur peut activer/désactiver ses propres items
+        // Un restaurateur peut ajouter un item global à son propre restaurant
         if ($user->role === 'restaurateur') {
-            return $item->category->restaurant->user_id === $user->id;
+            return $restaurant->user_id === $user->id;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Determine whether the user can update an item in a restaurant menu.
+     */
+    public function updateInRestaurant(User $user, Item $item, Restaurant $restaurant): bool
+    {
+        // Un restaurateur peut mettre à jour un item dans son propre restaurant
+        if ($user->role === 'restaurateur') {
+            return $restaurant->user_id === $user->id;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Determine whether the user can remove an item from a restaurant menu.
+     */
+    public function removeFromRestaurant(User $user, Item $item, Restaurant $restaurant): bool
+    {
+        // Un restaurateur peut retirer un item de son propre restaurant
+        if ($user->role === 'restaurateur') {
+            return $restaurant->user_id === $user->id;
         }
         
         return false;

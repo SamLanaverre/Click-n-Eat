@@ -13,14 +13,25 @@ class Item extends Model
 
     protected $fillable = [
         "name",
-        "cost",
-        "price",
-        "is_active",
-        "category_id"
+        "description",
+        "cost"
     ];
 
-    public function category()
+    /**
+     * Les catégories auxquelles cet item appartient (relation many-to-many)
+     */
+    public function categories()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class)->withTimestamps();
+    }
+    
+    /**
+     * Les restaurants qui proposent cet item (relation many-to-many avec attributs)
+     */
+    public function restaurants()
+    {
+        return $this->belongsToMany(Restaurant::class)
+                    ->withPivot('price', 'is_active')
+                    ->withTimestamps();
     }
 }

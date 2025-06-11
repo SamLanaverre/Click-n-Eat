@@ -32,18 +32,33 @@ class Restaurant extends Model
         return $this->belongsTo(User::class, 'owner_id');
     }
 
-    public function categories()
-    {
-        return $this->hasMany(Category::class);
-    }
-
+    /**
+     * Les commandes associées à ce restaurant
+     */
     public function orders()
     {
         return $this->hasMany(Order::class);
     }
 
+    /**
+     * Les items proposés par ce restaurant (relation many-to-many avec attributs)
+     */
     public function items()
     {
-        return $this->hasManyThrough(Item::class, Category::class);
+        return $this->belongsToMany(Item::class)
+                    ->withPivot('price', 'is_active')
+                    ->withTimestamps();
+    }
+    
+    /**
+     * Les catégories des items proposés par ce restaurant
+     */
+    public function categories()
+    {
+        return Category::whereHas('items', function($query) {
+            $query->whereHas('restaurants', function($q) {
+                $q->where('restaurants.id', $this->id);
+            });
+        });
     }
 }

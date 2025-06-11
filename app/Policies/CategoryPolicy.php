@@ -41,13 +41,8 @@ class CategoryPolicy
      */
     public function create(User $user): bool
     {
-        // Vérifie si l'utilisateur est un restaurateur et propriétaire du restaurant
-        if ($user->role === 'restaurateur') {
-            // La logique pour vérifier si le restaurant appartient à l'utilisateur
-            // sera gérée dans le contrôleur car nous n'avons pas accès au restaurant ici
-            return true;
-        }
-        
+        // Seuls les administrateurs peuvent créer des catégories globales
+        // (déjà géré par la méthode before)
         return false;
     }
 
@@ -56,11 +51,8 @@ class CategoryPolicy
      */
     public function update(User $user, Category $category): bool
     {
-        // Restaurateur peut modifier ses propres catégories
-        if ($user->role === 'restaurateur') {
-            return $category->restaurant->user_id === $user->id;
-        }
-        
+        // Seuls les administrateurs peuvent modifier des catégories globales
+        // (déjà géré par la méthode before)
         return false;
     }
 
@@ -69,11 +61,9 @@ class CategoryPolicy
      */
     public function delete(User $user, Category $category): bool
     {
-        // Restaurateur peut supprimer ses propres catégories
-        if ($user->role === 'restaurateur') {
-            return $category->restaurant->user_id === $user->id;
-        }
-        
+        // Seuls les administrateurs peuvent supprimer des catégories globales,
+        // et seulement si elles ne sont pas utilisées par des items
+        // La vérification de l'utilisation sera faite dans le contrôleur
         return false;
     }
 
@@ -82,11 +72,8 @@ class CategoryPolicy
      */
     public function restore(User $user, Category $category): bool
     {
-        // Restaurateur peut restaurer ses propres catégories
-        if ($user->role === 'restaurateur') {
-            return $category->restaurant->user_id === $user->id;
-        }
-        
+        // Seuls les administrateurs peuvent restaurer des catégories globales
+        // (déjà géré par la méthode before)
         return false;
     }
 
@@ -95,7 +82,16 @@ class CategoryPolicy
      */
     public function forceDelete(User $user, Category $category): bool
     {
-        // Seul l'admin peut supprimer définitivement
-        return false; // Déjà géré par before() pour admin
+        // Seuls les administrateurs peuvent supprimer définitivement des catégories globales
+        // (déjà géré par la méthode before)
+        return false;
+    }
+    
+    /**
+     * Détermine si l'utilisateur peut voir les restaurants proposant des items de cette catégorie.
+     */
+    public function viewRestaurants(?User $user, Category $category): bool
+    {
+        return true; // Tout le monde peut voir les restaurants par catégorie
     }
 }

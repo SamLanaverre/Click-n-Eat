@@ -12,6 +12,7 @@ use App\Policies\CategoryPolicy;
 use App\Policies\ItemPolicy;
 use App\Policies\OrderPolicy;
 use App\Policies\UserPolicy;
+use App\Policies\RestaurantMenuPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -28,6 +29,8 @@ class AuthServiceProvider extends ServiceProvider
         Item::class => ItemPolicy::class,
         Order::class => OrderPolicy::class,
         User::class => UserPolicy::class,
+        // La policy RestaurantMenuPolicy est utilisée manuellement dans les contrôleurs
+        // car elle ne correspond pas directement à un modèle unique
     ];
     
     /**
