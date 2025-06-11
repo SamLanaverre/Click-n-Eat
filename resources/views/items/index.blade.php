@@ -38,7 +38,13 @@
                                 <td>{{ $item->name }}</td>
                                 <td>{{ $item->cost }} €</td>
                                 <td>{{ $item->price }} €</td>
-                                <td>{{ $item->category->name }}</td>
+                                <td>
+                                    @forelse($item->categories as $category)
+                                        <span class="badge badge-info">{{ $category->name }}</span>
+                                    @empty
+                                        <span class="text-muted">Aucune catégorie</span>
+                                    @endforelse
+                                </td>
                                 <td>
                                     @if($item->is_active)
                                         <span class="badge badge-success">Oui</span>

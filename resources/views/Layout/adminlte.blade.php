@@ -119,6 +119,7 @@
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        <!-- Dashboard -->
                         <li class="nav-item">
                             <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -134,14 +135,14 @@
                         </li>
                         
                         <li class="nav-item">
-                            <a href="{{ route('categories.index') }}" class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}">
+                            <a href="{{ auth()->user() && (auth()->user()->isAdmin() || auth()->user()->isRestaurateur()) ? route('admin.categories.index') : route('categories.index') }}" class="nav-link {{ request()->routeIs('categories.*') || request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-list"></i>
                                 <p>Catégories</p>
                             </a>
                         </li>
                         
                         <li class="nav-item">
-                            <a href="{{ route('items.index') }}" class="nav-link {{ request()->routeIs('items.*') ? 'active' : '' }}">
+                            <a href="{{ auth()->user() && (auth()->user()->isAdmin() || auth()->user()->isRestaurateur()) ? route('admin.items.index') : route('items.index') }}" class="nav-link {{ request()->routeIs('items.*') || request()->routeIs('admin.items.*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-hamburger"></i>
                                 <p>Items</p>
                             </a>

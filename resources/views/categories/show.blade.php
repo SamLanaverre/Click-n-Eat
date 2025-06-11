@@ -44,7 +44,7 @@
             <h3>Items dans cette catégorie</h3>
             @if(auth()->user() && auth()->user()->isAdmin())
             <a href="{{ route('admin.items.create') }}" class="btn btn-primary btn-sm">
-                <i class="fas fa-plus"></i> Ajouter un item
+                <i class="fas fa-plus"></i> Créer un nouvel item
             </a>
             @endif
         </div>
@@ -76,6 +76,13 @@
                                     <a href="{{ route('admin.items.edit', $item) }}" class="btn btn-sm btn-outline-warning">
                                         <i class="fas fa-edit"></i> Éditer
                                     </a>
+                                    <form action="{{ route('categories.removeItem', ['category' => $category->id, 'item' => $item->id]) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir retirer cet item de cette catégorie ?')">
+                                            <i class="fas fa-unlink"></i> Retirer
+                                        </button>
+                                    </form>
                                     @endif
                                 </div>
                             </div>
@@ -85,5 +92,36 @@
             @endif
         </div>
     </div>
+
+    @if(auth()->user() && auth()->user()->isAdmin())
+    <div class="card mt-4">
+        <div class="card-header">
+            <h3>Ajouter un item existant à cette catégorie</h3>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('categories.addItem', $category) }}" method="POST">
+                @csrf
+                <div class="form-group">
+                    <label for="item_id">Sélectionner un item</label>
+                    <select name="item_id" id="item_id" class="form-control" required>
+                        <option value="">-- Choisir un item --</option>
+                        @php
+                            // Récupérer les IDs des items déjà dans la catégorie
+                            $categoryItemIds = $category->items->pluck('id')->toArray();
+                            // Récupérer tous les items qui ne sont pas dans cette catégorie
+                            $availableItems = \App\Models\Item::whereNotIn('id', $categoryItemIds)->orderBy('name')->get();
+                        @endphp
+                        @foreach($availableItems as $availableItem)
+                            <option value="{{ $availableItem->id }}">{{ $availableItem->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Ajouter à la catégorie
+                </button>
+            </form>
+        </div>
+    </div>
+    @endif
 </div>
 @endsection
