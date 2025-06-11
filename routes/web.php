@@ -66,6 +66,12 @@ Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
 Route::get('/client/dashboard', [ClientDashboardController::class, 'index'])
     ->middleware(['auth', 'role:client'])
     ->name('client.dashboard');
+    
+// Routes pour les commandes client - protégées par auth et middleware client
+Route::prefix('client')->middleware(['auth', 'role:client'])->group(function () {
+    Route::get('/orders', [\App\Http\Controllers\Client\OrderController::class, 'index'])->name('client.orders');
+    Route::get('/orders/{order}', [\App\Http\Controllers\Client\OrderController::class, 'show'])->name('client.orders.show');
+});
 
 // Restaurateur dashboard - protégé par auth et middleware restaurateur
 Route::get('/restaurant/dashboard', [RestaurantDashboardController::class, 'index'])
