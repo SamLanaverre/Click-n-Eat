@@ -1,7 +1,8 @@
-<x-adminlte-layout>
-    @section('header', 'Catégories')
-    
-    @section('content')
+@extends('layout.adminlte')
+
+@section('header', 'Catégories')
+
+@section('content')
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Liste des catégories</h3>
@@ -29,7 +30,7 @@
                             <td>{{ $category->id }}</td>
                             <td>{{ $category->name }}</td>
                             <td>
-                                <a href="{{ route('restaurants.show', $category->restaurant->id) }}" class="text-blue-600 hover:text-blue-900">{{ $category->restaurant->name }}</a>
+                                <a href="{{ route('restaurants.show', $category->restaurant->id) }}" class="text-primary">{{ $category->restaurant->name }}</a>
                             </td>
                             <td>
                                 <a href="{{ route('categories.show', $category->id) }}" class="btn btn-sm btn-info">
@@ -55,5 +56,4 @@
             </table>
         </div>
     </div>
-    @endsection
-</x-adminlte-layout>
+@endsection

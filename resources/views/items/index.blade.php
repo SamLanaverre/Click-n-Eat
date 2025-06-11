@@ -1,54 +1,74 @@
 @extends('layout.adminlte')
-    <h1 class="text-2xl font-bold mb-4">Items</h1>
 
-    @if(auth()->user() && auth()->user()->isRestaurateur())
-    <div class="mb-4">
-        <a href="{{ route('items.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Créer un item
-        </a>
-    </div>
-    @endif
+@section('header', 'Gestion des items')
 
-    @if($items->isEmpty())
-        <p class="text-gray-500">Aucun item disponible.</p>
-    @else
-        <div class="overflow-x-auto">
-            <table class="min-w-full bg-white border border-gray-200">
-                <thead>
-                    <tr>
-                        <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                        <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
-                        <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Coût</th>
-                        <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prix</th>
-                        <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Catégorie</th>
-                        <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Disponible</th>
-                        <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @foreach($items as $item)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $item->id }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $item->name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $item->cost }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $item->price }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $item->category->name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $item->is_active ? 'Oui' : 'Non' }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap flex space-x-2">
-                                <a href="{{ route('items.show', $item->id) }}" class="text-blue-600 hover:text-blue-900">Voir</a>
-                                @if(auth()->user() && auth()->user()->isRestaurateur())
-                                <a href="{{ route('items.edit', $item->id) }}" class="text-indigo-600 hover:text-indigo-900">Modifier</a>
-                                <form action="{{ route('items.destroy', $item->id) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('delete')
-                                    <button type="submit" class="text-red-600 hover:text-red-900">Supprimer</button>
-                                </form>
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+@section('content')
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Liste des items</h3>
+        <div class="card-tools">
+            @if(auth()->user() && auth()->user()->isRestaurateur())
+            <a href="{{ route('items.create') }}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus mr-1"></i> Créer un item
+            </a>
+            @endif
         </div>
-    @endif
-</x-app-layout>
+    </div>
+    <div class="card-body p-0">
+        @if($items->isEmpty())
+            <div class="alert alert-info m-3">Aucun item disponible.</div>
+        @else
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Coût</th>
+                            <th>Prix</th>
+                            <th>Catégorie</th>
+                            <th>Disponible</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($items as $item)
+                            <tr>
+                                <td>{{ $item->id }}</td>
+                                <td>{{ $item->name }}</td>
+                                <td>{{ $item->cost }} €</td>
+                                <td>{{ $item->price }} €</td>
+                                <td>{{ $item->category->name }}</td>
+                                <td>
+                                    @if($item->is_active)
+                                        <span class="badge badge-success">Oui</span>
+                                    @else
+                                        <span class="badge badge-danger">Non</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <a href="{{ route('items.show', $item->id) }}" class="btn btn-xs btn-info">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    @if(auth()->user() && auth()->user()->isRestaurateur())
+                                        <a href="{{ route('items.edit', $item->id) }}" class="btn btn-xs btn-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('items.destroy', $item->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-xs btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet item?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
+    </div>
+</div>
+@endsection

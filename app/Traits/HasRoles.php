@@ -24,11 +24,16 @@ trait HasRoles
         return $this->hasRole('client');
     }
 
+    /**
+     * Retourne la route du dashboard en fonction du rôle de l'utilisateur
+     * 
+     * @return string
+     */
     public function getDashboardRoute()
     {
         return match($this->role) {
             'admin' => 'admin.dashboard',
-            'restaurateur' => 'restaurateur.dashboard',
+            'restaurateur' => 'restaurant.dashboard', // Corrigé de 'restaurateur.dashboard' à 'restaurant.dashboard'
             'client' => 'client.dashboard',
             default => 'login',
         };

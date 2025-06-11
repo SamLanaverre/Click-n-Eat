@@ -49,12 +49,12 @@
                             <i class="fas fa-user-cog mr-2"></i> Profil
                         </a>
                         <div class="dropdown-divider"></div>
-                        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
-    @csrf
-    <button type="submit" class="dropdown-item" style="border: none; background: none; width: 100%; text-align: left;">
-        <i class="fas fa-sign-out-alt mr-2"></i> Déconnexion
-    </button>
-</form>
+                        <form method="POST" action="{{ route('logout') }}" class="dropdown-item p-0">
+                            @csrf
+                            <button type="submit" class="btn btn-link text-left w-100 px-3 py-2" style="text-decoration: none;">
+                                <i class="fas fa-sign-out-alt mr-2"></i> Déconnexion
+                            </button>
+                        </form>
                     </div>
                 </li>
             </ul>

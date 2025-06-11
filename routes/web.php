@@ -11,13 +11,17 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-// Route de base - redirige vers login ou welcome
+// Route de base - affiche toujours la page de bienvenue
 Route::get('/', function () {
-    if (Auth::check()) {
-        $user = Auth::user();
-        return redirect()->route($user->getDashboardRoute());
-    }
     return view('welcome');
+});
+
+// Route pour forcer la déconnexion et reset la session
+Route::get('/reset-session', function () {
+    Auth::logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/');
 });
 
 // Route pour le dashboard après connexion
@@ -73,6 +77,27 @@ Route::middleware(['auth'])->group(function () {
     
     // Gestion des catégories - protégée par policies
     Route::resource('restaurants.categories', CategoryController::class)->except(['index', 'show']);
+    
+    // Routes directes pour l'administration
+    Route::middleware('role:admin,restaurateur')->group(function () {
+        // Routes pour les catégories en administration
+        Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+        Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+        Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+        Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
+        Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+        Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
+        Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+        
+        // Routes pour les items en administration
+        Route::get('/items', [ItemController::class, 'index'])->name('items.index');
+        Route::get('/items/create', [ItemController::class, 'create'])->name('items.create');
+        Route::post('/items', [ItemController::class, 'store'])->name('items.store');
+        Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show');
+        Route::get('/items/{item}/edit', [ItemController::class, 'edit'])->name('items.edit');
+        Route::put('/items/{item}', [ItemController::class, 'update'])->name('items.update');
+        Route::delete('/items/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
+    });
     
     // Gestion des items - protégée par policies
     Route::resource('categories.items', ItemController::class)->except(['index', 'show']);
