@@ -1,75 +1,76 @@
-@extends('layout.adminlte')
+@extends('layouts.app')
 
 @section('title', isset($restaurant) ? $restaurant->name . ' - Menu' : 'Menu du restaurant')
 
-@section('content_header')
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1>{{ isset($restaurant) ? $restaurant->name . ' - Menu' : 'Menu du restaurant' }}</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Tableau de bord</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('restaurants.index') }}">Restaurants</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('restaurants.show', $restaurant) }}">{{ $restaurant->name }}</a></li>
-                    <li class="breadcrumb-item active">Menu</li>
-                </ol>
-            </div>
-        </div>
-    </div>
+@section('header')
+    <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        {{ isset($restaurant) ? $restaurant->name . ' - Menu' : 'Menu du restaurant' }}
+    </h2>
 @endsection
 
 @section('content')
-<div class="container-fluid">
-    <a href="{{ route('restaurants.show', $restaurant) }}" class="btn btn-secondary mb-3"><i class="fas fa-arrow-left"></i> Retour à la fiche</a>
-    <div class="card mb-4">
-        <div class="card-header">
-            <h1 class="h4 mb-0">{{ $restaurant->name }} — Menu</h1>
+<div class="py-12">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="mb-4">
+            <a href="{{ route('restaurants.show', $restaurant) }}" class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Retour au restaurant
+            </a>
         </div>
-        <div class="card-body">
-            <div class="mb-3">
-                <span class="text-muted"><i class="fas fa-map-marker-alt"></i> {{ $restaurant->address }}</span><br>
-                <span class="text-muted"><i class="fas fa-phone"></i> {{ $restaurant->phone }}</span><br>
-                <span class="text-muted">{{ $restaurant->description }}</span>
-            </div>
-            <hr>
-            <div class="row">
-                @forelse($restaurant->categories as $category)
-                    <div class="col-md-6 mb-4">
-                        <div class="card h-100">
-                            <div class="card-header bg-light">
-                                <strong>{{ $category->name }}</strong>
+        
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-6">
+            <div class="p-6 text-gray-900 dark:text-gray-100">
+                <h1 class="text-xl font-bold mb-4">{{ $restaurant->name }} — Menu</h1>
+                <div class="mb-4">
+                    <p class="text-gray-600 dark:text-gray-400"> {{ $restaurant->address }}</p>
+                    <p class="text-gray-600 dark:text-gray-400">{{ $restaurant->phone }}</p>
+                    <p class="text-gray-600 dark:text-gray-400">{{ $restaurant->description }}</p>
+                </div>
+                
+                <hr class="my-4 border-gray-300 dark:border-gray-700">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    @forelse($restaurant->categories as $category)
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden shadow">
+                            <div class="bg-gray-100 dark:bg-gray-600 px-4 py-3">
+                                <h3 class="font-bold">{{ $category->name }}</h3>
                             </div>
-                            <ul class="list-group list-group-flush">
+                            <ul class="divide-y divide-gray-200 dark:divide-gray-600">
                                 @forelse($category->items->where('is_active', true) as $item)
-                                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <li class="p-4 flex justify-between items-start">
                                         <div>
-                                            <div class="fw-bold">{{ $item->name }}</div>
-                                            <div class="small text-muted">{{ $item->description }}</div>
+                                            <div class="font-medium">{{ $item->name }}</div>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ $item->description }}</div>
                                         </div>
-                                        <div class="text-end">
-                                            <span class="badge bg-primary mb-2">{{ number_format($item->price / 100, 2, ',', ' ') }} €</span><br>
+                                        <div class="text-right">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100 mb-2">
+                                                {{ number_format($item->price / 100, 2, ',', ' ') }} €
+                                            </span>
                                             @auth
                                                 @if(auth()->user()->role === 'client')
-                                                    <button onclick="addToCart({{ $item->id }})" class="btn btn-sm btn-success"><i class="fas fa-plus"></i> Ajouter</button>
+                                                    <button onclick="addToCart({{ $item->id }})" class="mt-2 inline-flex items-center px-3 py-1 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 focus:bg-green-700 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                                                        Ajouter
+                                                    </button>
                                                 @endif
                                             @endauth
                                         </div>
                                     </li>
                                 @empty
-                                    <li class="list-group-item text-muted">Aucun plat actif.</li>
+                                    <li class="p-4 text-gray-500 dark:text-gray-400">Aucun plat actif.</li>
                                 @endforelse
                             </ul>
                         </div>
-                    </div>
-                @empty
-                    <div class="col-12 text-center text-muted">Aucune catégorie/menu disponible.</div>
-                @endforelse
+                    @empty
+                        <div class="col-span-2 bg-blue-50 dark:bg-blue-900 border-l-4 border-blue-400 p-4 rounded">
+                            <p class="text-blue-700 dark:text-blue-300">Ce restaurant n'a pas encore de catégories.</p>
+                        </div>
+                    @endforelse
+                </div>
             </div>
         </div>
     </div>
-
+</div>
     @auth
         @if(auth()->user()->role === 'client')
         <!-- Panier flottant -->
