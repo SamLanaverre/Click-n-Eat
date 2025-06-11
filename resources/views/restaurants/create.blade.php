@@ -1,6 +1,6 @@
 @extends('layout.adminlte')
 
-@section('main')
+@section('content')
 <div class="container py-4">
     <a href="{{ route('restaurants.index') }}" class="btn btn-secondary mb-3"><i class="fas fa-arrow-left"></i> Retour à la liste</a>
     <div class="card">
@@ -15,32 +15,94 @@
                     </ul>
                 </div>
             @endif
-            <form action="{{ route('restaurants.store') }}" method="POST">
+            <form action="{{ route('restaurants.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <div class="mb-3">
-                    <label for="name" class="form-label">Nom <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" required>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nom <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="description" name="description" rows="3" required>{{ old('description') }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Adresse <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="address" name="address" value="{{ old('address') }}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Téléphone <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                </div>
+                                <input type="text" class="form-control" id="phone" name="phone" value="{{ old('phone') }}" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                </div>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="logo" class="form-label">Logo</label>
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="logo" name="logo" accept="image/*">
+                                    <label class="custom-file-label" for="logo">Choisir un fichier</label>
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">Formats acceptés : JPG, PNG, GIF. Max 2Mo.</small>
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="description" name="description" rows="2" required>{{ old('description') }}</textarea>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="opening_hours" class="form-label">Horaires d'ouverture (JSON ou texte)</label>
+                            <textarea class="form-control" id="opening_hours" name="opening_hours" rows="3" placeholder='{"lundi":"9h-18h", ...}'>{{ old('opening_hours') }}</textarea>
+                            <small class="form-text text-muted">Exemple : {"lundi":"9h-18h","mardi":"9h-18h",...}</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <div class="form-check mt-4">
+                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', '1') == '1' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="is_active">
+                                    Restaurant actif
+                                </label>
+                                <small class="form-text text-muted d-block">Un restaurant inactif ne sera pas visible par les clients.</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="address" class="form-label">Adresse <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="address" name="address" value="{{ old('address') }}" required>
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Créer le restaurant</button>
+                    <a href="{{ route('restaurants.index') }}" class="btn btn-outline-secondary">Annuler</a>
                 </div>
-                <div class="mb-3">
-                    <label for="phone" class="form-label">Téléphone <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="phone" name="phone" value="{{ old('phone') }}" required>
-                </div>
-                <div class="mb-3">
-                    <label for="opening_hours" class="form-label">Horaires d'ouverture (JSON ou texte)</label>
-                    <input type="text" class="form-control" id="opening_hours" name="opening_hours" placeholder='{"lundi":"9h-18h", ...}' value="{{ old('opening_hours') }}">
-                    <small class="form-text text-muted">Exemple : {"lundi":"9h-18h","mardi":"9h-18h",...}</small>
-                </div>
-                <button type="submit" class="btn btn-success">Créer</button>
             </form>
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    // Script pour afficher le nom du fichier sélectionné dans l'input file
+    $(document).ready(function() {
+        $('.custom-file-input').on('change', function() {
+            var fileName = $(this).val().split('\\').pop();
+            $(this).next('.custom-file-label').addClass("selected").html(fileName);
+        });
+    });
+</script>
+@endpush
 @endsection

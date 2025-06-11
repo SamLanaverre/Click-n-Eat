@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Auth\Middleware\Authenticate;
 
 class ItemController extends Controller {
     public function index() {
@@ -17,12 +18,17 @@ class ItemController extends Controller {
         return view('items.show', compact('item'));
     }
 
+    #[Authenticate]
     public function create() {
+        $this->authorize('create', Item::class);
         $categories = Category::all();
         return view('items.create', compact('categories'));
     }
 
+    #[Authenticate]
     public function store(Request $request) {
+        $this->authorize('create', Item::class);
+        
         $request->validate([
             'name' => 'required|string|max:255',
             'cost' => 'nullable|integer',
@@ -35,14 +41,19 @@ class ItemController extends Controller {
         return redirect()->route('items.index')->with('success', 'Item ajouté avec succès.');
     }
 
+    #[Authenticate]
     public function edit($id) {
         $item = Item::findOrFail($id);
+        $this->authorize('update', $item);
+        
         $categories = Category::all();
         return view('items.edit', compact('item', 'categories'));
     }
 
+    #[Authenticate]
     public function update(Request $request, $id) {
         $item = Item::findOrFail($id);
+        $this->authorize('update', $item);
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -56,8 +67,11 @@ class ItemController extends Controller {
         return redirect()->route('items.index')->with('success', 'Item mis à jour.');
     }
 
+    #[Authenticate]
     public function destroy($id) {
         $item = Item::findOrFail($id);
+        $this->authorize('delete', $item);
+        
         $item->delete();
         return redirect()->route('items.index')->with('success', 'Item supprimé.');
     }

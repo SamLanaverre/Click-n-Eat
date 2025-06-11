@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminUserSeeder::class,
             ClientUserSeeder::class,
+            RestaurantSeeder::class,
         ]);
         
         // Crée 12 restaurants

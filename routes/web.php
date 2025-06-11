@@ -16,6 +16,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Route de test temporaire
+Route::get('/test', function () {
+    return view('test');
+});
+
 // Route pour forcer la déconnexion et reset la session
 Route::get('/reset-session', function () {
     Auth::logout();

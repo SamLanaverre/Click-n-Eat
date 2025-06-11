@@ -1,6 +1,6 @@
 @extends('layout.adminlte')
 
-@section('content')
+@section('main')
 <div class="container py-4">
     <a href="{{ route('restaurants.index') }}" class="btn btn-secondary mb-3"><i class="fas fa-arrow-left"></i> Retour à la liste</a>
     
@@ -72,13 +72,7 @@
                             @forelse($restaurant->opening_hours ?? [] as $day => $hours)
                                 <li class="list-group-item d-flex justify-content-between">
                                     <span>{{ ucfirst($day) }}</span>
-                                    <span>
-                                        @if(is_array($hours))
-                                            {{ implode(', ', $hours) }}
-                                        @else
-                                            {{ $hours }}
-                                        @endif
-                                    </span>
+                                    <span>{{ $hours }}</span>
                                 </li>
                             @empty
                                 <li class="list-group-item text-center text-muted">Horaires non spécifiés</li>

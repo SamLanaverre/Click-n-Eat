@@ -8,12 +8,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Auth\Middleware\Authenticate;
 
 class ProfileController extends Controller
 {
     /**
      * Display the user's profile form.
      */
+    #[Authenticate]
     public function edit(Request $request): View
     {
         return view('profile.edit', [
@@ -24,6 +26,7 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
+    #[Authenticate]
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $request->user()->fill($request->validated());
@@ -40,6 +43,7 @@ class ProfileController extends Controller
     /**
      * Delete the user's account.
      */
+    #[Authenticate]
     public function destroy(Request $request): RedirectResponse
     {
         $request->validateWithBag('userDeletion', [

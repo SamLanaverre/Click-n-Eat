@@ -17,6 +17,9 @@ class Restaurant extends Model
         'description',
         'address',
         'phone',
+        'email',
+        'logo',
+        'is_active',
         'opening_hours'
     ];
 

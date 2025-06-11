@@ -8,12 +8,14 @@ use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Auth\Middleware\Authenticate;
 
 class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    #[Authenticate]
     public function index(Request $request, Restaurant $restaurant = null)
     {
         $user = Auth::user();
@@ -48,6 +50,7 @@ class OrderController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+    #[Authenticate]
     public function create(Request $request)
     {
         $restaurant = Restaurant::findOrFail($request->restaurant_id);
@@ -59,6 +62,7 @@ class OrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    #[Authenticate]
     public function store(Request $request)
     {
         $request->validate([
@@ -110,6 +114,7 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
+    #[Authenticate]
     public function show(Request $request, Restaurant $restaurant = null, Order $order = null)
     {
         if (!$order) {
@@ -139,6 +144,7 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    #[Authenticate]
     public function update(Request $request, Restaurant $restaurant, Order $order)
     {
         $user = Auth::user();
@@ -165,6 +171,7 @@ class OrderController extends Controller
     /**
      * Cancel an order (client only)
      */
+    #[Authenticate]
     public function cancel(Order $order)
     {
         if ($order->client_id !== Auth::id()) {

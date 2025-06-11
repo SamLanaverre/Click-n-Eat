@@ -7,12 +7,14 @@ use App\Models\User;
 use App\Models\Restaurant;
 use App\Models\Order;
 use Illuminate\View\View;
+use Illuminate\Auth\Middleware\Authenticate;
 
 class DashboardController extends Controller
 {
     /**
      * Display the admin dashboard.
      */
+    #[Authenticate]
     public function index(): View
     {
         $totalUsers = User::count();

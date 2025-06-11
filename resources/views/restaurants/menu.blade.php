@@ -1,6 +1,6 @@
 @extends('layout.adminlte')
 
-@section('main')
+@section('content')
 <div class="container py-4">
     <a href="{{ route('restaurants.show', $restaurant) }}" class="btn btn-secondary mb-3"><i class="fas fa-arrow-left"></i> Retour à la fiche</a>
     <div class="card mb-4">

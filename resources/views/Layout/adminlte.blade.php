@@ -19,8 +19,6 @@
             top: 100%;
         }
         .dropdown-item button {
-            border: none;
-            background: transparent;
             width: 100%;
             text-align: left;
             padding: 0.5rem 1rem;
@@ -30,7 +28,13 @@
         .dropdown-item.p-0 {
             padding: 0 !important;
         }
-        .btn-danger {
+        .btn-outline-danger {
+            background-color: transparent;
+            border: 1px solid #dc3545;
+            color: #dc3545 !important;
+        }
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
             color: white !important;
         }
     </style>
@@ -80,14 +84,10 @@
                         <div class="dropdown-divider"></div>
                         <form method="POST" action="{{ route('logout') }}" id="logout-form" class="dropdown-item p-0">
                             @csrf
-                            <button type="submit" class="btn btn-danger text-left w-100 px-3 py-2">
+                            <button type="submit" class="btn btn-outline-danger text-danger w-100 px-3 py-2">
                                 <i class="fas fa-sign-out-alt mr-2"></i> Déconnexion
                             </button>
                         </form>
-                        <div class="dropdown-divider"></div>
-                        <a href="{{ url('/reset-session') }}" class="dropdown-item">
-                            <i class="fas fa-power-off mr-2"></i> Forcer la déconnexion
-                        </a>
                     </div>
                 </li>
             </ul>
