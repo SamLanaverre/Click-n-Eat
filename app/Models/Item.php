@@ -14,7 +14,15 @@ class Item extends Model
     protected $fillable = [
         "name",
         "description",
-        "cost"
+        "cost",
+        "is_active"
+    ];
+    
+    /**
+     * Valeur par défaut pour les attributs
+     */
+    protected $attributes = [
+        'is_active' => true
     ];
 
     /**

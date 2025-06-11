@@ -136,6 +136,7 @@ Route::middleware(['auth'])->group(function () {
     // Routes publiques pour les items
     Route::get('/items', [ItemController::class, 'index'])->name('items.index');
     Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show');
+    Route::post('/items', [ItemController::class, 'store'])->name('items.store');
     
     // Commandes pour les clients
     Route::controller(OrderController::class)->group(function () {

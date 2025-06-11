@@ -15,27 +15,59 @@
 
 <form action="{{ route('items.store') }}" method="POST">
     @csrf
-    <label>Nom :</label>
-    <input type="text" name="name" required>
+    <div class="form-group">
+        <label for="name">Nom :</label>
+        <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
+        @error('name')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
 
-    <label>Coût (centimes) :</label>
-    <input type="number" name="cost">
+    <div class="form-group">
+        <label for="description">Description :</label>
+        <textarea name="description" id="description" class="form-control @error('description') is-invalid @enderror" rows="3">{{ old('description') }}</textarea>
+        @error('description')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
 
-    <label>Prix (centimes) :</label>
-    <input type="number" name="price" required>
+    <div class="form-group">
+        <label for="cost">Coût (centimes) :</label>
+        <input type="number" name="cost" id="cost" class="form-control @error('cost') is-invalid @enderror" value="{{ old('cost') }}">
+        @error('cost')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
 
-    <label>Catégorie :</label>
-    <select name="category_id" required>
-        @foreach ($categories as $category)
-            <option value="{{ $category->id }}">{{ $category->name }}</option>
-        @endforeach
-    </select>
-
-    <label>Disponible :</label>
-    <input type="checkbox" name="is_active" value="1" checked>
-
-    <button type="submit">Ajouter</button>
+    <div class="form-group">
+        <label for="categories">Catégories :</label>
+        <select name="categories[]" id="categories" class="form-control @error('categories') is-invalid @enderror" multiple required>
+            @foreach ($categories as $category)
+                <option value="{{ $category->id }}" {{ in_array($category->id, old('categories', [])) ? 'selected' : '' }}>
+                    {{ $category->name }}
+                </option>
+            @endforeach
+        </select>
+        @error('categories')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+        <small class="form-text text-muted">Maintenez la touche Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs catégories.</small>
+    </div>
+    
+    <div class="form-group">
+        <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="is_active" name="is_active" value="1" checked>
+            <label class="custom-control-label" for="is_active">Disponible</label>
+        </div>
+    </div>
+    
+    <div class="form-group mt-4">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Ajouter
+        </button>
+        <a href="{{ route('items.index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+    </div>
 </form>
-
-<a href="{{ route('items.index') }}">Retour</a>
 @endsection

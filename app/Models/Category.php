@@ -26,16 +26,13 @@ class Category extends Model
     
     /**
      * Les restaurants qui proposent des items de cette catégorie
-     * Cette méthode utilise une sous-requête pour trouver tous les restaurants
-     * qui ont au moins un item dans cette catégorie
+     * Relation many-to-many via les items
      */
     public function restaurants()
     {
-        return Restaurant::whereHas('items', function($query) {
-            $query->whereHas('categories', function($q) {
-                $q->where('categories.id', $this->id);
-            });
-        });
+        return $this->belongsToMany(Restaurant::class, 'restaurant_item', 'item_id', 'restaurant_id')
+                    ->distinct()
+                    ->withTimestamps();
     }
     
     /**

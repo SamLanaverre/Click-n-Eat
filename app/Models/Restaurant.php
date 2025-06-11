@@ -52,13 +52,32 @@ class Restaurant extends Model
     
     /**
      * Les catégories des items proposés par ce restaurant
+     * Cette méthode retourne une collection de catégories plutôt qu'une relation
+     * pour éviter l'erreur addEagerConstraints
      */
-    public function categories()
+    public function getCategories()
     {
-        return Category::whereHas('items', function($query) {
-            $query->whereHas('restaurants', function($q) {
-                $q->where('restaurants.id', $this->id);
-            });
-        });
+        // Récupérer les items du restaurant
+        $items = $this->items;
+        
+        // Récupérer les catégories uniques de ces items
+        $categories = collect();
+        foreach ($items as $item) {
+            foreach ($item->categories as $category) {
+                if (!$categories->contains('id', $category->id)) {
+                    $categories->push($category);
+                }
+            }
+        }
+        
+        return $categories;
+    }
+    
+    /**
+     * Accesseur pour obtenir les catégories comme si c'était une relation
+     */
+    public function getCategoriesAttribute()
+    {
+        return $this->getCategories();
     }
 }

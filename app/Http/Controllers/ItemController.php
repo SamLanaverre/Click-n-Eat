@@ -50,13 +50,15 @@ class ItemController extends Controller {
             'cost' => 'nullable|numeric|min:0',
             'categories' => 'required|array',
             'categories.*' => 'exists:categories,id',
+            'is_active' => 'nullable|boolean',
         ]);
 
         // Créer l'item
         $item = Item::create([
             'name' => $validated['name'],
-            'description' => $validated['description'],
+            'description' => $validated['description'] ?? null,
             'cost' => $validated['cost'] ?? 0,
+            'is_active' => $request->has('is_active'),
         ]);
         
         // Associer les catégories
