@@ -85,6 +85,17 @@ Route::middleware(['auth'])->group(function () {
     
     // Routes directes pour l'administration
     Route::middleware('role:admin,restaurateur')->group(function () {
+        // Routes pour la gestion des utilisateurs (admin uniquement)
+        Route::middleware('role:admin')->group(function () {
+            // Routes pour les utilisateurs
+            Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
+            Route::get('/users/{user}/edit', [App\Http\Controllers\UserController::class, 'edit'])->name('users.edit');
+            Route::put('/users/{user}', [App\Http\Controllers\UserController::class, 'update'])->name('users.update');
+            
+            // Routes pour les commandes admin
+            Route::get('/admin/orders', [App\Http\Controllers\OrderController::class, 'adminIndex'])->name('admin.orders.index');
+        });
+        
         // Routes pour les catégories en administration
         Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
         Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');

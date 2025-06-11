@@ -6,10 +6,12 @@ use App\Models\Restaurant;
 use App\Models\Category;
 use App\Models\Item;
 use App\Models\Order;
+use App\Models\User;
 use App\Policies\RestaurantPolicy;
 use App\Policies\CategoryPolicy;
 use App\Policies\ItemPolicy;
 use App\Policies\OrderPolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -25,6 +27,7 @@ class AuthServiceProvider extends ServiceProvider
         Category::class => CategoryPolicy::class,
         Item::class => ItemPolicy::class,
         Order::class => OrderPolicy::class,
+        User::class => UserPolicy::class,
     ];
     
     /**

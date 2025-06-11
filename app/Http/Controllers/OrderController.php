@@ -9,9 +9,35 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Auth\Middleware\Authenticate;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
 
 class OrderController extends Controller
 {
+    /**
+     * Affiche la liste des commandes pour l'administrateur
+     */
+    #[Authenticate]
+    public function adminIndex(): View
+    {
+        // Vérifier que l'utilisateur est un administrateur
+        Gate::authorize('viewAny', Order::class);
+        
+        // Récupérer les commandes en cours (pending, accepted, preparing, ready)
+        $currentOrders = Order::with(['user', 'restaurant'])
+            ->whereIn('status', ['pending', 'accepted', 'preparing', 'ready'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10, ['*'], 'current_page');
+        
+        // Récupérer les commandes passées (completed, cancelled)
+        $pastOrders = Order::with(['user', 'restaurant'])
+            ->whereIn('status', ['completed', 'cancelled'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10, ['*'], 'past_page');
+        
+        return view('orders.admin-index', compact('currentOrders', 'pastOrders'));
+    }
+    
     /**
      * Display a listing of the resource.
      */

@@ -12,8 +12,8 @@
                 <div class="icon">
                     <i class="fas fa-users"></i>
                 </div>
-                <a href="#" class="small-box-footer">
-                    Plus d'infos <i class="fas fa-arrow-circle-right"></i>
+                <a href="{{ route('users.index') }}" class="small-box-footer">
+                    Gérer les utilisateurs <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
@@ -26,8 +26,8 @@
                 <div class="icon">
                     <i class="fas fa-utensils"></i>
                 </div>
-                <a href="#" class="small-box-footer">
-                    Plus d'infos <i class="fas fa-arrow-circle-right"></i>
+                <a href="{{ route('restaurants.index') }}" class="small-box-footer">
+                    Gérer les restaurants <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
@@ -40,8 +40,8 @@
                 <div class="icon">
                     <i class="fas fa-shopping-cart"></i>
                 </div>
-                <a href="#" class="small-box-footer">
-                    Plus d'infos <i class="fas fa-arrow-circle-right"></i>
+                <a href="{{ route('admin.orders.index') }}" class="small-box-footer">
+                    Voir les commandes <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
