@@ -11,7 +11,8 @@ class AdminMiddleware
     {
         if (!$request->user() || $request->user()->role !== 'admin') {
             if ($request->user()) {
-                return redirect()->route($request->user()->role . '.dashboard');
+                // Utiliser la méthode getDashboardRoute() pour obtenir la route appropriée
+                return redirect()->route($request->user()->getDashboardRoute());
             }
             return redirect()->route('login');
         }

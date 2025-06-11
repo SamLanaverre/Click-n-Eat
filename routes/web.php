@@ -13,9 +13,9 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-// Route de base - affiche toujours la page de bienvenue
+// Route de base - redirige vers la page de connexion
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 // Route de test temporaire

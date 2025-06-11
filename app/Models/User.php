@@ -23,6 +23,15 @@ class User extends Authenticatable
         'password',
         'role'
     ];
+    
+    /**
+     * Les attributs par défaut pour le modèle.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'role' => 'client',
+    ];
 
     /**
      * The attributes that should be hidden for serialization.

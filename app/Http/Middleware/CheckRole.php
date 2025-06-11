@@ -26,7 +26,8 @@ class CheckRole
         })->map(fn($r) => trim($r))->unique();
 
         if (!$roles->contains($userRole)) {
-            return redirect()->route($userRole . '.dashboard');
+            // Utiliser la méthode getDashboardRoute() pour obtenir la route appropriée
+            return redirect()->route($request->user()->getDashboardRoute());
         }
 
         return $next($request);

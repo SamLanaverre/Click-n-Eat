@@ -48,6 +48,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+    // Redirection vers le dashboard approprié selon le rôle
+    return redirect()->route($user->getDashboardRoute());
     }
 }
