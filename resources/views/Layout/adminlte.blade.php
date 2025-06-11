@@ -5,7 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'Laravel') }}</title>
-    
+
+    <!-- Styles personnalisés pour les dropdowns -->
+    <style>
+        .dropdown-menu.show {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: none !important;
+            position: absolute;
+            right: 0;
+            left: auto;
+            top: 100%;
+        }
+        .dropdown-item button {
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+        }
+        .dropdown-item.p-0 {
+            padding: 0 !important;
+        }
+        .btn-danger {
+            color: white !important;
+        }
+    </style>
+
     <!-- AdminLTE CSS ONLY -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
     <!-- Font Awesome -->
@@ -49,12 +78,16 @@
                             <i class="fas fa-user-cog mr-2"></i> Profil
                         </a>
                         <div class="dropdown-divider"></div>
-                        <form method="POST" action="{{ route('logout') }}" class="dropdown-item p-0">
+                        <form method="POST" action="{{ route('logout') }}" id="logout-form" class="dropdown-item p-0">
                             @csrf
-                            <button type="submit" class="btn btn-link text-left w-100 px-3 py-2" style="text-decoration: none;">
+                            <button type="submit" class="btn btn-danger text-left w-100 px-3 py-2">
                                 <i class="fas fa-sign-out-alt mr-2"></i> Déconnexion
                             </button>
                         </form>
+                        <div class="dropdown-divider"></div>
+                        <a href="{{ url('/reset-session') }}" class="dropdown-item">
+                            <i class="fas fa-power-off mr-2"></i> Forcer la déconnexion
+                        </a>
                     </div>
                 </li>
             </ul>
@@ -177,5 +210,43 @@
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
     <!-- Bootstrap Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @yield('scripts')
+    
+    <!-- Script pour s'assurer que le dropdown de déconnexion fonctionne correctement -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // S'assurer que le dropdown utilisateur fonctionne
+            const userDropdown = document.querySelector('.nav-item.dropdown');
+            if (userDropdown) {
+                const dropdownToggle = userDropdown.querySelector('[data-toggle="dropdown"]');
+                const dropdownMenu = userDropdown.querySelector('.dropdown-menu');
+                
+                if (dropdownToggle && dropdownMenu) {
+                    // Ajouter un gestionnaire d'événements pour le clic
+                    dropdownToggle.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        dropdownMenu.classList.toggle('show');
+                    });
+                    
+                    // Fermer le dropdown lors d'un clic à l'extérieur
+                    document.addEventListener('click', function(e) {
+                        if (!userDropdown.contains(e.target)) {
+                            dropdownMenu.classList.remove('show');
+                        }
+                    });
+                }
+            }
+            
+            // S'assurer que le formulaire de déconnexion fonctionne
+            const logoutForm = document.getElementById('logout-form');
+            if (logoutForm) {
+                logoutForm.addEventListener('submit', function(e) {
+                    // Empêcher les comportements par défaut qui pourraient interférer
+                    e.stopPropagation();
+                });
+            }
+        });
+    </script>
 </body>
 </html>
