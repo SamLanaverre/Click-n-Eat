@@ -177,6 +177,18 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/orders/{order}', 'show')->name('restaurants.orders.show');
         Route::patch('/orders/{order}', 'update')->name('restaurants.orders.update');
     });
+
+    // Gestion des catégories par restaurant
+    Route::middleware(['auth', 'role:restaurateur'])->prefix('restaurants/{restaurant}')->group(function () {
+        Route::controller(\App\Http\Controllers\Restaurant\CategoryController::class)->group(function () {
+            Route::get('/categories', 'index')->name('restaurants.categories.index');
+            Route::get('/categories/create', 'create')->name('restaurants.categories.create');
+            Route::post('/categories', 'store')->name('restaurants.categories.store');
+            Route::get('/categories/{category}/edit', 'edit')->name('restaurants.categories.edit');
+            Route::put('/categories/{category}', 'update')->name('restaurants.categories.update');
+            Route::delete('/categories/{category}', 'destroy')->name('restaurants.categories.destroy');
+        });
+    });
 });
 
 // Routes d'authentification
