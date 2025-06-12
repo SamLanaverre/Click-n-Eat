@@ -50,7 +50,7 @@ class RestaurantPolicy
     public function update(User $user, Restaurant $restaurant): bool
     {
         // Admin peut tout modifier, restaurateur seulement ses propres restaurants
-        return $user->role === 'restaurateur' && $restaurant->user_id === $user->id;
+        return $user->role === 'restaurateur' && $restaurant->owner_id === $user->id;
     }
 
     /**
@@ -59,7 +59,7 @@ class RestaurantPolicy
     public function delete(User $user, Restaurant $restaurant): bool
     {
         // Admin peut tout supprimer, restaurateur seulement ses propres restaurants
-        return $user->role === 'restaurateur' && $restaurant->user_id === $user->id;
+        return $user->role === 'restaurateur' && $restaurant->owner_id === $user->id;
     }
 
     /**
@@ -68,7 +68,7 @@ class RestaurantPolicy
     public function restore(User $user, Restaurant $restaurant): bool
     {
         // Admin peut tout restaurer, restaurateur seulement ses propres restaurants
-        return $user->role === 'restaurateur' && $restaurant->user_id === $user->id;
+        return $user->role === 'restaurateur' && $restaurant->owner_id === $user->id;
     }
 
     /**
@@ -86,7 +86,7 @@ class RestaurantPolicy
     public function manageMenu(User $user, Restaurant $restaurant): bool
     {
         // Admin peut tout gérer, restaurateur seulement ses propres restaurants
-        return $user->role === 'restaurateur' && $restaurant->user_id === $user->id;
+        return $user->role === 'restaurateur' && $restaurant->owner_id === $user->id;
     }
     
     /**
@@ -95,6 +95,6 @@ class RestaurantPolicy
     public function viewOrders(User $user, Restaurant $restaurant): bool
     {
         // Admin peut tout voir, restaurateur seulement ses propres restaurants
-        return $user->role === 'restaurateur' && $restaurant->user_id === $user->id;
+        return $user->role === 'restaurateur' && $restaurant->owner_id === $user->id;
     }
 }

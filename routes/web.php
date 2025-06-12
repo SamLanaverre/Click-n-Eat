@@ -188,6 +188,23 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/categories/{category}', 'update')->name('restaurants.categories.update');
             Route::delete('/categories/{category}', 'destroy')->name('restaurants.categories.destroy');
         });
+        
+        // Gestion des items par restaurant
+        Route::controller(\App\Http\Controllers\Restaurant\ItemController::class)->group(function () {
+            Route::get('/items', 'index')->name('restaurants.items.index');
+            Route::get('/items/create', 'create')->name('restaurants.items.create');
+            Route::post('/items', 'store')->name('restaurants.items.store');
+            Route::get('/items/{item}/edit', 'edit')->name('restaurants.items.edit');
+            Route::put('/items/{item}', 'update')->name('restaurants.items.update');
+            Route::delete('/items/{item}', 'destroy')->name('restaurants.items.destroy');
+        });
+        
+        // Gestion du menu du restaurant
+        Route::controller(\App\Http\Controllers\Restaurant\MenuController::class)->group(function () {
+            Route::get('/menu', 'index')->name('restaurants.menu.index');
+            Route::post('/menu/{item}/add', 'addToMenu')->name('restaurants.menu.add');
+            Route::delete('/menu/{item}/remove', 'removeFromMenu')->name('restaurants.menu.remove');
+        });
     });
 });
 

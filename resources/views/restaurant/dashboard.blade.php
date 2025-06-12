@@ -43,8 +43,8 @@
                             <a href="{{ route('restaurants.edit', $restaurant) }}" class="btn btn-sm btn-outline-primary">
                                 <i class="fas fa-edit mr-1"></i> Modifier
                             </a>
-                            <a href="{{ route('restaurants.menu', $restaurant) }}" class="btn btn-sm btn-outline-success">
-                                <i class="fas fa-list mr-1"></i> Gérer le menu
+                            <a href="{{ route('restaurants.menu.index', $restaurant) }}" class="btn btn-sm btn-outline-success">
+                                <i class="fas fa-utensils mr-1"></i> Gérer le menu
                             </a>
                         </div>
                     </div>

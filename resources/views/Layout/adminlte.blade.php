@@ -142,7 +142,13 @@
                         </li>
                         
                         <li class="nav-item">
-                            <a href="{{ auth()->user() && (auth()->user()->isAdmin() || auth()->user()->isRestaurateur()) ? route('admin.items.index') : route('items.index') }}" class="nav-link {{ request()->routeIs('items.*') || request()->routeIs('admin.items.*') ? 'active' : '' }}">
+                            <a href="{{ 
+                                auth()->user() && auth()->user()->isAdmin() 
+                                    ? route('admin.items.index') 
+                                    : (auth()->user() && auth()->user()->isRestaurateur() && auth()->user()->restaurants->count() == 1 
+                                        ? route('restaurants.items.index', auth()->user()->restaurants->first()) 
+                                        : route('items.index')) 
+                            }}" class="nav-link {{ request()->routeIs('items.*') || request()->routeIs('admin.items.*') || request()->routeIs('restaurants.items.*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-hamburger"></i>
                                 <p>Items</p>
                             </a>

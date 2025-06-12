@@ -98,6 +98,79 @@
             </form>
         </div>
     </div>
+    
+    <!-- Section de gestion des items du menu -->    
+    <div class="card mt-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">Gestion du menu</h2>
+            <a href="{{ route('restaurants.items.create', $restaurant) }}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Ajouter un item
+            </a>
+        </div>
+        <div class="card-body">
+            @if($restaurant->items->isEmpty())
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle mr-2"></i> Vous n'avez pas encore d'items dans votre menu. Commencez par en ajouter un !
+                </div>
+            @else
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Nom</th>
+                                <th>Prix</th>
+                                <th>Catégories</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($restaurant->items as $item)
+                                <tr>
+                                    <td>
+                                        @if($item->image)
+                                            <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->name }}" class="img-thumbnail" style="max-height: 50px;">
+                                        @else
+                                            <span class="text-muted"><i class="fas fa-image"></i> Pas d'image</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $item->name }}</td>
+                                    <td>{{ number_format($item->price, 2, ',', ' ') }} €</td>
+                                    <td>
+                                        @foreach($item->categories as $category)
+                                            <span class="badge badge-info">{{ $category->name }}</span>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @if($item->is_active)
+                                            <span class="badge badge-success">Actif</span>
+                                        @else
+                                            <span class="badge badge-danger">Inactif</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="{{ route('restaurants.items.edit', [$restaurant, $item]) }}" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form action="{{ route('restaurants.items.destroy', [$restaurant, $item]) }}" method="POST" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet item ?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </div>
+    </div>
 </div>
 
 @push('scripts')

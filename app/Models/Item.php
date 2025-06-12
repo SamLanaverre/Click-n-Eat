@@ -15,14 +15,19 @@ class Item extends Model
         "name",
         "description",
         "cost",
-        "is_active"
+        "is_active",
+        "is_in_menu",
+        "restaurant_id",
+        "image",
+        "price"
     ];
     
     /**
      * Valeur par défaut pour les attributs
      */
     protected $attributes = [
-        'is_active' => true
+        'is_active' => true,
+        'is_in_menu' => false
     ];
 
     /**
